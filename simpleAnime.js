@@ -208,7 +208,7 @@
 		}
 	},
 	timer=0,
-	aFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame,
+	aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame,
 	Anime = {
 		cancel : false,
 		set : function(fn) {
@@ -234,25 +234,22 @@
 			id=0;
 		},
 		getTime:function(){
-			return window.performance.now?window.performance.now():+new Date();
+			return w.performance.now?w.performance.now():+new Date();
 		},
 		easeFormate:function(str){
 			str=str.toLowerCase();
-			if(ease[str]){
+			if(ease.hasOwnProperty(str)){
 				return str;
 			}
-			if(ease[str+'out']){
+			if(ease.hasOwnProperty(str+'out')){
 				return str+'out';
 			}
-			str=str.replace('ease','');
 			var inout='out';
-			if(/inout|in|out/.test(str)){
-				inout=/inout|in|out/.exec(str)[0];
-				str=str.replace(/inout|in|out/g,'');
+			if(/(inout|in)/.test(str)){
+				inout=RegExp.$1;
 			}
-			str=str.replace(/[^a-z]/g,'');
-			if(ease[str+inout]){
-				return str+inout;
+			if(/(quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce)/.test(str)){
+				return RegExp.$1+inout;
 			}
 			return 'linear';
 		},
