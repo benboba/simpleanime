@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Document</title>
+	<style>
+	body{
+		margin: 20px;
+	}
+	#ball{
+		background: red;
+		border-radius: 20px;
+		height: 40px;
+		left: 20px;
+		position: absolute;
+		top: 100px;
+		width: 40px;
+	}
+	</style>
+</head>
+<body>
+	<select id="ease">
+		<option value="linear" selected="selected">linear</option>
+		<option value="quadin">quadin</option>
+		<option value="quadout">quadout</option>
+		<option value="quadinout">quadinout</option>
+		<option value="cubicin">cubicin</option>
+		<option value="cubicout">cubicout</option>
+		<option value="cubicinout">cubicinout</option>
+		<option value="quartin">quartin</option>
+		<option value="quartout">quartout</option>
+		<option value="quartinout">quartinout</option>
+		<option value="quintin">quintin</option>
+		<option value="quintout">quintout</option>
+		<option value="quintinout">quintinout</option>
+		<option value="sinein">sinein</option>
+		<option value="sineout">sineout</option>
+		<option value="sineinout">sineinout</option>
+		<option value="expoin">expoin</option>
+		<option value="expoout">expoout</option>
+		<option value="expoinout">expoinout</option>
+		<option value="circin">circin</option>
+		<option value="circout">circout</option>
+		<option value="circinout">circinout</option>
+		<option value="elasticin">elasticin</option>
+		<option value="elasticout">elasticout</option>
+		<option value="elasticinout">elasticinout</option>
+		<option value="backin">backin</option>
+		<option value="backout">backout</option>
+		<option value="backinout">backinout</option>
+		<option value="bouncein">bouncein</option>
+		<option value="bounceout">bounceout</option>
+		<option value="bounceinout">bounceinout</option>
+	</select>
+	<button id="button">go</button>
+	<div id="ball"></div>
+	<script src="simpleAnime.js"></script>
+	<script>
+	(function(){
+		var ball=document.getElementById('ball'),ease=document.getElementById('ease'),button=document.getElementById('button');
+		button.addEventListener('click',function(){
+			button.setAttribute('disabled','disabled');
+			var anime_id=simpleAnime.reg({
+				duration:2000,
+				ease:ease.value,
+				func:function(res,per,id){
+					ball.style.left=(20+500*res)+'px';
+					var new_ease=simpleAnime.ease(per,'ease-Out-Bounce','bounce');
+					console.log(new_ease);
+				},
+				after:function(){
+					ball.removeAttribute('style');
+					button.removeAttribute('disabled');
+				},
+				pause:true
+			});
+			
+			setTimeout(function(){
+				simpleAnime.resume(anime_id);
+			},500);
+			setTimeout(function(){
+				simpleAnime.pause(anime_id);
+			},1000);
+			setTimeout(function(){
+				simpleAnime.restart(anime_id).resume(anime_id);
+			},1500);
+			setTimeout(function(){
+				simpleAnime.pause(anime_id);
+			},2000);
+			setTimeout(function(){
+				simpleAnime.resume(anime_id);
+			},2500);
+			setTimeout(function(){
+				simpleAnime.remove(anime_id);
+				button.removeAttribute('disabled');
+			},3500);
+		});
+	})();
+	</script>
+</body>
+</html>
