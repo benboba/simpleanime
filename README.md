@@ -20,7 +20,7 @@ var anime_id=simpleAnime.reg({
 		
 		//下面的代码是获取新的缓动运算结果，可一次获取多个，返回值为数组，可连续传入缓动函数名称或传入一个数组，以下为两种方式的示例，传入参数的格式和顺序没有任何要求，只要包含缓动类型关键字(linear|quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce)即可，大小写不限，如果不传入缓动方式in|out|inout，则默认会返回out缓动
 		var new_ease=simpleAnime.ease(percent,'easeOutBounce','BackEaseIn');
-		var new_ease=simpleAnime.ease(percent,['bounce','inoutback']);
+		var new_ease=simpleAnime.ease(percent,['bounce','inout-back']);
 	},
 	before:function(){},//延时结束开始动画时执行[函数]
 	after:function(){},//结束动画时执行[函数]
