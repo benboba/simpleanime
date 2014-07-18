@@ -4,7 +4,7 @@ simpleanime
 简单动画实现
 
 simpleAnime示例：
-
+```javascript
 var anime_id=simpleAnime.reg({
 	delay:1000,//延时启动[毫秒]
 	duration:5000,//持续时间[毫秒]
@@ -23,10 +23,12 @@ var anime_id=simpleAnime.reg({
 	ease:'easeOutElastic',//缓动函数
 	pause:false//是否初始暂停
 });
+```
 
 以下功能支持链式操作
-
+```javascript
 simpleAnime.pause(anime_id)//中途暂停
 	.resume(anime_id)//取消暂停
 	.remove(anime_id)//移除（不可恢复）
 	.restart(anime_id);//重新启动动画（不可恢复）
+```
