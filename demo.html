@@ -61,12 +61,13 @@
 		button.addEventListener('click',function(){
 			button.setAttribute('disabled','disabled');
 			var anime_id=simpleAnime.reg({
-				duration:2000,
+				duration:3000,
 				ease:ease.value,
 				func:function(res,per,id){
-					ball.style.left=(20+500*res)+'px';
-					var new_ease=simpleAnime.ease(per,'ease-Out-Bounce','bounce');
-					console.log(new_ease);
+					var new_ease=simpleAnime.ease(per,'ease-Out-Bounce','EEElastic');
+					ball.style.opacity=Math.round(500+500*res)/1000;
+					ball.style.left=(20+500*new_ease[1])+'px';
+					ball.style.top=100+200*new_ease[0]+'px';
 				},
 				after:function(){
 					ball.removeAttribute('style');
@@ -78,6 +79,7 @@
 			setTimeout(function(){
 				simpleAnime.resume(anime_id);
 			},500);
+			/*
 			setTimeout(function(){
 				simpleAnime.pause(anime_id);
 			},1000);
@@ -93,7 +95,7 @@
 			setTimeout(function(){
 				simpleAnime.remove(anime_id);
 				button.removeAttribute('disabled');
-			},3500);
+			},3500);*/
 		});
 	})();
 	</script>
