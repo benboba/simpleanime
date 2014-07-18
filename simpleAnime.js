@@ -248,7 +248,7 @@
 				inout=/inout|in|out/.exec(str)[0];
 				str=str.replace(/inout|in|out/g,'');
 			}
-			str=str.replace(/[^a-z]/g);
+			str=str.replace(/[^a-z]/g,'');
 			if(ease[str+inout]){
 				return str+inout;
 			}
