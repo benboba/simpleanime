@@ -1,4 +1,6 @@
-//简单动画
+//     simpleAnime.js
+//     (c) 2013-2014 WangFeng
+
 (function(w){
 	var anime_list=[],//动画对象列表
 	ease={//缓动函数
