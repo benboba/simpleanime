@@ -4,6 +4,7 @@ simpleanime
 简单动画实现
 
 引用simpleAnime.js即可使用，不依赖任何类库，所有动画在同一条时间轴渲染，最大化节约性能。
+支持动画的延时、暂停、恢复、循环、重启、移除，支持缓动及多重缓动
 
 simpleAnime示例：
 ```javascript
