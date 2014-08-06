@@ -237,19 +237,24 @@
 			return w.performance.now?w.performance.now():+new Date();
 		},
 		easeFormate:function(str){
-			str=str.toLowerCase();
+			str=str.toLowerCase().replace(/[^a-z]/g,'');
 			if(ease.hasOwnProperty(str)){
 				return str;
 			}
 			if(ease.hasOwnProperty(str+'out')){
 				return str+'out';
 			}
-			var inout='out';
-			if(/(inout|in)/.test(str)){
-				inout=RegExp.$1;
-			}
-			if(/(quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce)/.test(str)){
-				return RegExp.$1+inout;
+			var _type='';
+			str=str.replace(/(quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce)/,function(type){
+				_type=type;
+				return '';
+			});
+			if(_type){
+				var inout='out';
+				if(/(inout|in)/.test(str)){
+					inout=RegExp.$1;
+				}
+				return _type+inout;
 			}
 			return 'linear';
 		},
