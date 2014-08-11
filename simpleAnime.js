@@ -234,7 +234,7 @@
 			id=0;
 		},
 		getTime:function(){
-			return w.performance.now?w.performance.now():+new Date();
+			return (w.performance && w.performance.now)?w.performance.now():+new Date();
 		},
 		easeFormate:function(str){
 			if(!str) return 'linear';
