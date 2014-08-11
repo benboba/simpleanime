@@ -237,6 +237,7 @@
 			return w.performance.now?w.performance.now():+new Date();
 		},
 		easeFormate:function(str){
+			if(!str) return 'linear';
 			str=str.toLowerCase().replace(/[^a-z]/g,'');
 			if(ease.hasOwnProperty(str)){
 				return str;
