@@ -186,7 +186,9 @@
 			var past=Math.min(now-anime_list[i].begin-anime_list[i].delay,anime_list[i].duration),easeFunc=ease[anime_list[i].ease]||ease.linear;
 			var _per=past/anime_list[i].duration;
 			var _ease=easeFunc(_per);
-			anime_list[i].func(_ease,_per,anime_list[i].loop_in,anime_list[i].id);
+			if(anime_list[i].func){
+				anime_list[i].func(_ease,_per,anime_list[i].loop_in,anime_list[i].id);
+			}
 			if(anime_list[i] && past==anime_list[i].duration){
 				if(anime_list[i].afterloop){
 					anime_list[i].afterloop(anime_list[i].loop_in);
@@ -260,7 +262,7 @@
 			return 'linear';
 		},
 		reg:function(obj,id){
-			if(obj.func && typeof obj.func == 'function'){
+			if(!obj.func || typeof obj.func == 'function'){
 				var _now=Anime.getTime(),_id=id || ('a'+_now+'_'+Math.random());
 				var _obj={
 					id:_id,//唯一id
@@ -271,7 +273,7 @@
 					loop_in:0,//记录循环第几次
 					beforeloop:obj.beforeloop||null,//开始单次循环时执行
 					afterloop:obj.afterloop||null,//结束单次循环时执行
-					func:obj.func,//动画过程
+					func:obj.func||null,//动画过程
 					running:false,//记录是否已启动
 					before:obj.before||null,//延时结束开始动画时执行
 					after:obj.after||null,//结束动画时执行
@@ -372,7 +374,7 @@ var anime_id=simpleAnime.reg({
 	loop:3,//循环次数
 	beforeloop:function(loop_in){},//开始单次循环时执行[函数]
 	afterloop:function(loop_in){},//结束单次循环时执行[函数]
-	func:obj.function(result,percent,loop_in,anime_id){//动画过程[函数，必须]，三个参数为：缓动函数运算结果、动画进度(0-1)、在第几次循环、动画id
+	func:obj.function(result,percent,loop_in,anime_id){//动画过程[函数，必须]，4个参数为：缓动函数运算结果、动画进度(0-1)、循环第几次、动画id
 		console.log(result);
 		console.log(percent);
 		console.log(anime_id);
