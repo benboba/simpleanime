@@ -370,8 +370,8 @@ var anime_id=simpleAnime.reg({
 	delay:1000,//延时启动[毫秒]
 	duration:5000,//持续时间[毫秒]
 	loop:3,//循环次数
-	beforeloop:function(){},//开始单次循环时执行[函数]
-	afterloop:function(){},//结束单次循环时执行[函数]
+	beforeloop:function(loop_in){},//开始单次循环时执行[函数]
+	afterloop:function(loop_in){},//结束单次循环时执行[函数]
 	func:obj.function(result,percent,loop_in,anime_id){//动画过程[函数，必须]，三个参数为：缓动函数运算结果、动画进度(0-1)、在第几次循环、动画id
 		console.log(result);
 		console.log(percent);
