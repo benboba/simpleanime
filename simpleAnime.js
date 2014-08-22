@@ -372,7 +372,7 @@
 			}
 			return this;
 		},
-		ease : function(per) {//获取其它缓动
+		getEasing : function(per) {//获取其它缓动
 			var args = [];
 			if (Object.prototype.toString.call(arguments[1]) === '[object Array]') {
 				args = arguments[1];
@@ -487,9 +487,9 @@
  	loop:3,//循环次数
  	beforeloop:function(event){},//开始单次循环时执行[函数]event.loop,event.target
  	afterloop:function(event){},//结束单次循环时执行[函数]event.loop,event.target
- 	progress:obj.function(event){//动画过程[函数，必须]，event.ease，event.progress，event.total，event.percent，event.target
- 		var new_ease=simpleAnime.ease(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组，可连续传入缓动函数名称
- 		var new_ease=simpleAnime.ease(event.ease,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组，
+ 	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
+ 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
+ 		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组，
  	},
  	before:function(event){},//延时结束开始动画时执行[函数]event.target
  	after:function(event){},//结束动画时执行[函数]event.target
