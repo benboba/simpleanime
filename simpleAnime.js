@@ -340,9 +340,6 @@
 			return _obj;
 		}
 	}, proto = {
-		reg : function(obj) {
-			return Anime.reg(obj);
-		},
 		pause : function() {//暂停
 			this.setProp({
 				'pause' : true,
