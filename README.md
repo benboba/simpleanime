@@ -8,32 +8,52 @@ simpleanime
 
 simpleAnime示例：
 ```javascript
-var anime_id=simpleAnime.reg({
+var animeObj=simpleAnime({
 	delay:1000,//延时启动[毫秒]
 	duration:5000,//持续时间[毫秒]
 	loop:3,//循环次数
-	beforeloop:function(loop_in){},//开始单次循环时执行[函数]
-	afterloop:function(loop_in){},//结束单次循环时执行[函数]
-	func:obj.function(result,percent,loop_in,anime_id){//动画过程[函数，必须]，四个参数为：缓动函数运算结果、动画进度(0-1)、动画id
-		console.log(result);
-		console.log(percent);
-		console.log(anime_id);
-		
-		//下面的代码是获取新的缓动运算结果，可一次获取多个，返回值为数组，可连续传入缓动函数名称或传入一个数组，以下为两种方式的示例，传入参数的格式和顺序没有任何要求，只要包含缓动类型关键字(linear|quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce)即可，大小写不限，如果不传入缓动方式in|out|inout，则默认会返回out缓动
-		var new_ease=simpleAnime.ease(percent,'easeOutBounce','BackEaseIn');
-		var new_ease=simpleAnime.ease(percent,['bounce','inout-back']);
+	beforeloop:function(event){},//开始单次循环时执行[函数]
+	afterloop:function(event){},//结束单次循环时执行[函数]
+	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
+		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
+		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组，
 	},
-	before:function(){},//延时结束开始动画时执行[函数]
-	after:function(){},//结束动画时执行[函数]
-	ease:'easeOutElastic',//缓动函数
+	before:function(event){},//延时结束开始动画时执行[函数]event.target
+	after:function(event){},//结束动画时执行[函数]event.target
+	easing:'easeOutElastic',//缓动函数
 	pause:false//是否初始暂停
 });
 ```
 
 以下功能支持链式操作
 ```javascript
-simpleAnime.pause(anime_id)//中途暂停
-	.resume(anime_id)//取消暂停
-	.remove(anime_id)//移除（不可恢复）
-	.restart(anime_id);//重新启动动画（不可恢复）
+animeObj.pause()//中途暂停
+	.resume()//取消暂停
+	.destroy()//移除（不可恢复）
+	.restart()//重新启动动画（不可恢复）
+	.bind({//绑定事件，可为一个事件绑定多个回调函数，所有回调函数的作用域为simpleAnime实例本身
+		before:function(){},
+		beforeloop:function(){},
+		progress:function(){},
+		afterloop:function(){},
+		after:function(){}
+	})
+	.bind('progress',function(){})//也支持“事件名+回调函数”的方式
+	.unbind({//解除绑定，参数同bind
+		before:function(){}
+	})
+	.unbind('before',function(){})//解除绑定同理
+	.unbind('before')//只传事件名会解除该事件下所有回调函数的绑定
+	.unbind({//只传事件名会解除该事件下所有回调函数的绑定
+		'before':null,
+		'after':null
+	})
+	.setProp('loop_in',0)//设置属性
+```
+
+其它方法：
+```javascript
+animeObj.getProp('begin')//获取属性
+	.getEasing(number,easingFunction1,easingFunction2)//获取其它缓动方法的运算结果
+	.getObj()//获取原始参数
 ```
