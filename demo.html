@@ -70,8 +70,8 @@
 						loop : 3
 					}).bind({
 						progress : function(event) {
-							var new_ease = this.ease(event.percent, 'ease-Out-Bounce', 'EEEla(990)#$)@*stic');
-							ball.style.opacity = Math.round(500 + 500 * event.ease) / 1000;
+							var new_ease = this.getEasing(event.percent, 'ease-Out-Bounce', 'EEEla(990)#$)@*stic');
+							ball.style.opacity = Math.round(500 + 500 * event.easing) / 1000;
 							ball.style.left = (20 + 500 * new_ease[1]) + 'px';
 							ball.style.top = 100 + 200 * new_ease[0] + 'px';
 						},
