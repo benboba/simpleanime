@@ -193,7 +193,7 @@
 					}
 				}
 			}
-			var past = Math.min(now - propFunc('begin') - propFunc('delay'), propFunc('duration')), easeFunc = propFunc('ease');
+			var past = Math.min(now - propFunc('begin') - propFunc('delay'), propFunc('duration')), easeFunc = propFunc('easing');
 			var _duration = propFunc('duration'), _per = past / _duration;
 			var _ease = easeFunc(_per);
 			var fi = propFunc('progress').length;
@@ -219,8 +219,8 @@
 					}
 				}
 				var _loop=propFunc('loop_in')+1;
+				animeObj.setProp('loop_in',_loop);
 				if (propFunc('loop') !== 0 && _loop >= propFunc('loop')) {//判断是否循环
-					animeObj.setProp('loop_in',_loop);
 					var ai = propFunc('after').length;
 					if (ai) {
 						for (; ai--; ) {
@@ -312,7 +312,7 @@
 				running : false, //记录是否已启动
 				before : [], //延时结束开始动画时执行
 				after : [], //结束动画时执行
-				ease : Anime.easeFormate(obj.ease), //缓动函数,
+				easing : Anime.easeFormate(obj.easing), //缓动函数,
 				pause : Boolean(obj.pause), //是否处于暂停
 				pause_time : 0//暂停的时间点
 			};
@@ -493,7 +493,7 @@
  	},
  	before:function(event){},//延时结束开始动画时执行[函数]event.target
  	after:function(event){},//结束动画时执行[函数]event.target
- 	ease:'easeOutElastic',//缓动函数
+ 	easing:'easeOutElastic',//缓动函数
  	pause:false//是否初始暂停
  });
  *
