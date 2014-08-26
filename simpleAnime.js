@@ -166,6 +166,14 @@
 		var now = Anime.getTime();
 		for (var i = anime_list.length; i--; ) {
 			var animeObj = anime_list[i];
+			if(animeObj.bedestroy){
+				anime_list.splice(i, 1);
+				if (!anime_list.length) {
+					Anime.clear(timer);
+					timer = 0;
+				}
+				continue;
+			}
 			var propFunc = animeObj.getProp;
 			if (propFunc('pause')) {
 				continue;
@@ -359,11 +367,7 @@
 		destroy : function() {
 			for (var i = anime_list.length; i--; ) {
 				if (anime_list[i] === this) {
-					anime_list.splice(i, 1);
-					if (!anime_list.length) {
-						Anime.clear(timer);
-						timer = 0;
-					}
+					anime_list[i].bedestroy = 1;
 					break;
 				}
 			}
