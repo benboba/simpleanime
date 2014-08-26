@@ -182,7 +182,7 @@
 				if (now - propFunc('begin') < propFunc('delay')) {
 					continue;
 				} else {
-					propFunc('running') = true;
+					animeObj.setProp('running',true);
 					var bi = propFunc('before').length, bli = propFunc('beforeloop').length;
 					if (bi) {
 						for (; bi--; ) {
@@ -367,7 +367,7 @@
 		destroy : function() {
 			for (var i = anime_list.length; i--; ) {
 				if (anime_list[i] === this) {
-					anime_list[i].bedestroy = true;
+					anime_list[i].bedestroy = 1;
 					break;
 				}
 			}
@@ -414,7 +414,7 @@
 				}
 			} else if (key === 'loop_in' && val === parseInt(val) && val >= 0 && val <= _obj.loop) {
 				_obj[key] = val;
-			} else if (key === 'pause') {
+			} else if (key === 'pause' || key === 'running') {
 				_obj[key] = Boolean(val);
 			}
 			return _self;
@@ -469,7 +469,6 @@
 			_obj = __obj;
 			return _self;
 		};
-		this.bedestroy=false;
 
 		anime_list.push(this);
 		if (!timer) {
