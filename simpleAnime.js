@@ -367,7 +367,7 @@
 		destroy : function() {
 			for (var i = anime_list.length; i--; ) {
 				if (anime_list[i] === this) {
-					anime_list[i].bedestroy = 1;
+					anime_list[i].bedestroy = true;
 					break;
 				}
 			}
@@ -469,6 +469,7 @@
 			_obj = __obj;
 			return _self;
 		};
+		this.bedestroy=false;
 
 		anime_list.push(this);
 		if (!timer) {
