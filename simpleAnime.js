@@ -470,7 +470,11 @@
 			return _self;
 		};
 
-		anime_list.push(this);
+		if(obj.insertBefore){
+			anime_list.unshift(this);
+		}else{
+			anime_list.push(this);
+		}
 		if (!timer) {
 			Anime.set(interval);
 		}
@@ -495,7 +499,8 @@
  	before:function(event){},//延时结束开始动画时执行[函数]event.target
  	after:function(event){},//结束动画时执行[函数]event.target
  	easing:'easeOutElastic',//缓动函数
- 	pause:false//是否初始暂停
+ 	pause:false,//是否初始暂停
+ 	insertBefore:true//默认为false，后插入的先执行，传入true则后插入的后执行
  });
  *
  * 以下功能支持链式操作
