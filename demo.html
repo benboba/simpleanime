@@ -67,14 +67,23 @@
 						duration : 3000,
 						easing : ease.value,
 						pause : true,
-						loop : 3
+						loop : 3,
+						before : [function(event) {
+							console.log(event);
+						}],
+						beforeloop : function(event) {
+							console.log(event);
+						},
+						afterloop : function(event) {
+							console.log('after'+event.loop);
+						}
 					}).bind({
-						progress : function(event) {
-							var new_ease = this.getEasing(event.percent, 'ease-Out-Bounce', 'EEEla(990)#$)@*stic');
+						progress : [function(event) {
+							var new_ease = this.getEasing(event.percent, ['ease-Out-Bounce', 'EEEla(990)#$)@*stic']);
 							ball.style.opacity = Math.round(500 + 500 * event.easing) / 1000;
 							ball.style.left = (20 + 500 * new_ease[1]) + 'px';
 							ball.style.top = 100 + 200 * new_ease[0] + 'px';
-						},
+						}],
 						after : function() {
 							ball.removeAttribute('style');
 							button.removeAttribute('disabled');
@@ -83,6 +92,7 @@
 					setTimeout(function() {
 						animeObj.resume();
 					}, 500);
+					return;
 					setTimeout(function() {
 						animeObj.pause();
 					}, 1000);
