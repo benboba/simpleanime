@@ -247,6 +247,15 @@
 						'begin' : now,
 						'delay' : 0
 					});
+					var bli = propFunc('beforeloop').length;
+					if (bli) {
+						for (; bli--; ) {
+							propFunc('beforeloop')[bli].call(animeObj, {
+								loop : propFunc('loop_in'),
+								target : animeObj
+							});
+						}
+					}
 				}
 			}
 		}
@@ -329,8 +338,7 @@
 			};
 			if (_obj.pause) {
 				_obj.pause_time = _now;
-			}
-			if (!_obj.delay) {
+			} else if (!_obj.delay) {
 				_obj.running = true;
 			}
 
@@ -531,7 +539,8 @@
  * 	before:function(event){},//延时结束开始动画时执行[函数]event.target
  * 	after:function(event){},//结束动画时执行[函数]event.target
  * 	easing:'easeOutElastic',//缓动函数
- * 	pause:false//是否初始暂停
+ * 	pause:false，//是否初始暂停
+ * 	insertBefore:true//先执行
  * });
  *
  * 以下功能支持链式操作
