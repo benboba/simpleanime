@@ -14,7 +14,7 @@ var animeObj=simpleAnime({
 	loop:3,//循环次数
 	beforeloop:function(event){},//开始单次循环时执行[函数]
 	afterloop:function(event){},//结束单次循环时执行[函数]
-	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
+	progress:obj.function(event){//动画过程[函数]，event.easing，event.progress，event.total，event.percent，event.target
 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
 		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组，
 	},
