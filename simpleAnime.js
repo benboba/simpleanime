@@ -166,7 +166,7 @@
 		var now = Anime.getTime();
 		for (var i = anime_list.length; i--; ) {
 			var animeObj = anime_list[i];
-			if(animeObj.bedestroy){
+			if (animeObj.bedestroy) {
 				anime_list.splice(i, 1);
 				if (!anime_list.length) {
 					Anime.clear(timer);
@@ -182,7 +182,7 @@
 				if (now - propFunc('begin') < propFunc('delay')) {
 					continue;
 				} else {
-					animeObj.setProp('running',true);
+					animeObj.setProp('running', true);
 					var bi = propFunc('before').length, bli = propFunc('beforeloop').length;
 					if (bi) {
 						for (; bi--; ) {
@@ -226,8 +226,8 @@
 						});
 					}
 				}
-				var _loop=propFunc('loop_in')+1;
-				animeObj.setProp('loop_in',_loop);
+				var _loop = propFunc('loop_in') + 1;
+				animeObj.setProp('loop_in', _loop);
 				if (propFunc('loop') !== 0 && _loop >= propFunc('loop')) {//判断是否循环
 					var ai = propFunc('after').length;
 					if (ai) {
@@ -250,9 +250,12 @@
 				}
 			}
 		}
-	}, timer = 0, aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame, Anime = {
+	}, timer = 0, //记录interval或requestAnimationFrame
+	toString = Object.prototype.toString, //缓存toString方法
+	aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame, //获取requestAnimationFrame
+	Anime = {
 		cancel : false,
-		set : function(fn) {
+		set : function(fn) {//启动定时器
 			if (aFrame) {
 				timer = aFrame(function() {
 					fn();
@@ -266,7 +269,7 @@
 				timer = setInterval(fn, 17);
 			}
 		},
-		clear : function(id) {
+		clear : function(id) {//终止定时器
 			if (aFrame) {
 				Anime.cancel = true;
 			} else {
@@ -274,13 +277,13 @@
 			}
 			id = 0;
 		},
-		getTime : function() {
+		getTime : function() {//获取时间戳
 			return (w.performance && w.performance.now) ? w.performance.now() : +new Date();
 		},
-		easeFormate : function(str) {
+		easeFormate : function(str) {//格式化缓动函数
 			if (!str)
 				return ease.linear;
-			if ( typeof str === 'function' && str(0) === 0 && str(1) === 1) {
+			if ( typeof str === 'function' && str(0) === 0 && str(1) === 1) {//验证自定义缓动方法是否符合规范
 				return str;
 			}
 			if ( typeof str !== 'string')
@@ -289,7 +292,7 @@
 			if (ease.hasOwnProperty(str)) {
 				return ease[str];
 			}
-			if (ease.hasOwnProperty(str + 'out')) {
+			if (ease.hasOwnProperty(str + 'out')) {//默认为out类型缓动
 				return ease[str + 'out'];
 			}
 			var _type = '';
@@ -306,7 +309,7 @@
 			}
 			return ease.linear;
 		},
-		makeObj : function(obj) {
+		makeObj : function(obj) {//将原始参数转换为动画参数
 			var _now = Anime.getTime();
 			var _obj = {
 				begin : _now, //记录开始时间
@@ -330,21 +333,26 @@
 			if (!_obj.delay) {
 				_obj.running = true;
 			}
-			if (obj.beforeloop && typeof obj.beforeloop === 'function') {
-				_obj.beforeloop.push(obj.beforeloop);
-			}
-			if (obj.afterloop && typeof obj.afterloop === 'function') {
-				_obj.afterloop.push(obj.afterloop);
-			}
-			if (obj.progress && typeof obj.progress === 'function') {
-				_obj.progress.push(obj.progress);
-			}
-			if (obj.before && typeof obj.before === 'function') {
-				_obj.before.push(obj.before);
-			}
-			if (obj.after && typeof obj.after === 'function') {
-				_obj.after.push(obj.after);
-			}
+
+			var checkEv = function(ev) {//处理事件绑定
+				if (obj[ev]) {
+					if ( typeof obj[ev] === 'function') {
+						_obj[ev].push(obj[ev]);
+					} else if (toString.call(obj[ev]) === '[object Array]') {
+						for (var ei = obj[ev].length; ei--; ) {
+							if ( typeof obj[ev][ei] === 'function') {
+								_obj[ev].unshift(obj[ev][ei]);
+							}
+						}
+					}
+				}
+			};
+
+			checkEv('beforeloop');
+			checkEv('afterloop');
+			checkEv('progress');
+			checkEv('before');
+			checkEv('after');
 			return _obj;
 		}
 	}, proto = {
@@ -364,7 +372,7 @@
 			});
 			return this;
 		},
-		destroy : function() {
+		destroy : function() {//终止
 			for (var i = anime_list.length; i--; ) {
 				if (anime_list[i] === this) {
 					anime_list[i].bedestroy = 1;
@@ -374,11 +382,13 @@
 			return this;
 		},
 		getEasing : function(per) {//获取其它缓动
-			var args = [];
-			if (Object.prototype.toString.call(arguments[1]) === '[object Array]') {
-				args = arguments[1];
+			var args = [], i, il;
+			if (toString.call(arguments[1]) === '[object Array]') {
+				for ( i = 0, il = arguments[1].length; i < il; i++) {
+					args.push(Anime.easeFormate(arguments[1][i]));
+				}
 			} else {
-				for (var i = 1, il = arguments.length; i < il; i++) {
+				for ( i = 1, il = arguments.length; i < il; i++) {
 					args.push(Anime.easeFormate(arguments[i]));
 				}
 			}
@@ -399,11 +409,11 @@
 		}
 
 		var _obj = Anime.makeObj(obj), _self = this;
-		this.getProp = function(key) {
+		this.getProp = function(key) {//获取属性
 			return _obj[key];
 		};
-		this.setProp = function(key, val) {
-			if (Object.prototype.toString.call(key) === '[object Object]') {
+		this.setProp = function(key, val) {//设置属性，支持key+val也支持对象的形式
+			if (toString.call(key) === '[object Object]') {
 				for (var i in key) {
 					_self.setProp(i, key[i]);
 				}
@@ -419,27 +429,43 @@
 			}
 			return _self;
 		};
-		this.getObj = function() {
+		this.getObj = function() {//获取原始动画对象，深度拷贝
 			var _o = {};
 			for (var i in obj) {
 				if (obj.hasOwnProperty(i)) {
-					_o[i] = obj[i];
+					if (toString.call(obj[i]) === '[object Array]') {
+						var _arr = [];
+						for (var ai = obj[i].length; ai--; ) {
+							_arr.unshift(obj[i][ai]);
+						}
+						_o[i] = _arr;
+					} else {
+						_o[i] = obj[i];
+					}
 				}
 			}
 			return _o;
 		};
-		this.bind = function(event, fn) {
-			if (Object.prototype.toString.call(event) === '[object Object]') {
+		this.bind = function(event, fn) {//绑定事件处理方法
+			if (toString.call(event) === '[object Object]') {
 				for (var i in event) {
 					_self.bind(i, event[i]);
 				}
-			} else if ( typeof event === 'string' && typeof fn === 'function' && /^(?:progress|beforeloop|afterloop|before|after)$/.test(event)) {
-				_obj[event].push(fn);
+			} else if ( typeof event === 'string' && /^(?:progress|beforeloop|afterloop|before|after)$/.test(event)) {
+				if ( typeof fn === 'function') {
+					_obj[event].push(fn);
+				} else if (toString.call(fn) === '[object Array]') {
+					for (var fi = 0, fl = fn.length; fi < fl; fi++) {
+						if ( typeof fn[fi] === 'function') {
+							_obj[event].push(fn[fi]);
+						}
+					}
+				}
 			}
 			return _self;
 		};
-		this.unbind = function(event, fn) {
-			if (Object.prototype.toString.call(event) === '[object Object]') {
+		this.unbind = function(event, fn) {//解除绑定
+			if (toString.call(event) === '[object Object]') {
 				for (var i in event) {
 					_self.unbind(i, event[i]);
 				}
@@ -470,9 +496,9 @@
 			return _self;
 		};
 
-		if(obj.insertBefore){
+		if (obj.insertBefore) {
 			anime_list.unshift(this);
-		}else{
+		} else {
 			anime_list.push(this);
 		}
 		if (!timer) {
@@ -483,38 +509,42 @@
 		simpleAnime.prototype[i] = proto[i];
 	}
 	w.simpleAnime = simpleAnime;
+
+	if ( typeof w.define === 'function' && define.amd) {
+		define('simpleanime', [], function() {
+			return simpleAnime;
+		});
+	}
 })(window);
 /*
  * simpleAnime示例：
- var animeObj=simpleAnime({
- 	delay:1000,//延时启动[毫秒]
- 	duration:5000,//持续时间[毫秒]
- 	loop:3,//循环次数
- 	beforeloop:function(event){},//开始单次循环时执行[函数]event.loop,event.target
- 	afterloop:function(event){},//结束单次循环时执行[函数]event.loop,event.target
- 	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
- 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
- 		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组，
- 	},
- 	before:function(event){},//延时结束开始动画时执行[函数]event.target
- 	after:function(event){},//结束动画时执行[函数]event.target
- 	easing:'easeOutElastic',//缓动函数
- 	pause:false,//是否初始暂停
- 	insertBefore:true//默认为false，后插入的先执行，传入true则后插入的后执行
- });
+ * var animeObj=simpleAnime({
+ * 	delay:1000,//延时启动[毫秒]
+ * 	duration:5000,//持续时间[毫秒]
+ * 	loop:3,//循环次数
+ * 	beforeloop:function(event){},//开始单次循环时执行[函数]event.loop,event.target
+ * 	afterloop:function(event){},//结束单次循环时执行[函数]event.loop,event.target
+ * 	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
+ * 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
+ * 		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组
+ * 	},
+ * 	before:function(event){},//延时结束开始动画时执行[函数]event.target
+ * 	after:function(event){},//结束动画时执行[函数]event.target
+ * 	easing:'easeOutElastic',//缓动函数
+ * 	pause:false//是否初始暂停
+ * });
  *
  * 以下功能支持链式操作
- animeObj.pause()//中途暂停
- .resume()//取消暂停
- .destroy()//移除（不可恢复）
- .restart()//重新启动动画
- .bind({//绑定事件，可为一个事件绑定多个回调函数
- 	before:function(){},
- 	beforeloop:function(){},
- 	progress:function(){},
- 	afterloop:function(){},
- 	after:function(){}
- }).bind('progress',function(){}).unbind({//解除绑定，参数同bind
- 	
- });
+ * animeObj.pause()//中途暂停
+ * 	.resume()//取消暂停
+ * 	.destroy()//移除（不可恢复）
+ * 	.restart()//重新启动动画
+ * 	.bind({//绑定事件，可为一个事件绑定多个回调函数，传入数组可绑定多个方法
+ * 		before:[function1(){},function2(){}],
+ * 		beforeloop:function(){},
+ * 		progress:function(){},
+ * 		afterloop:function(){},
+ * 		after:function(){}
+ * 	}).bind('progress',function(){}).unbind({//解除绑定，参数同bind
+ * 	});
  */
