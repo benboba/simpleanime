@@ -63,7 +63,7 @@
 				button.addEventListener('click', function() {
 					button.setAttribute('disabled', 'disabled');
 					var animeObj;
-					animeObj = simpleAnime({
+					animeObj = SimpleAnime({
 						duration : 3000,
 						easing : ease.value,
 						loop : 3,
@@ -93,7 +93,7 @@
 					}, 500);
 					
 					//同时添加两个动画对象，可不同步执行动画
-					simpleAnime({
+					SimpleAnime({
 						duration : 2000,
 						easing : ease.value,
 						progress : function(event) {
