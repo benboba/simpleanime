@@ -1,9 +1,14 @@
-//     simpleAnime.js
-//     (c) 2013-2014 WangFeng
+/*
+ * simpleanime.js 
+ * @author WangFeng
+ * 
+ * Copyright 2014, (https://github.com/benboba/simpleanime)
+ * Licensed under the MIT license
+ */
 
 (function(w) {
-	var anime_list = [], //动画对象列表
-	ease = {//缓动函数
+	var anime_list = [], // 动画对象列表
+	ease = {// 缓动函数
 		linear : function(f) {
 			return f;
 		},
@@ -162,7 +167,7 @@
 			}
 			return ease.bounceout(f * 2 - 1) * 0.5 + 0.5;
 		}
-	}, interval = function() {//间隔执行函数
+	}, interval = function() {// 间隔执行函数
 		var now = Anime.getTime();
 		for (var i = anime_list.length; i--; ) {
 			var animeObj = anime_list[i];
@@ -178,7 +183,7 @@
 			if (propFunc('pause')) {
 				continue;
 			}
-			if (!propFunc('running')) {//判断延时启动
+			if (!propFunc('running')) {// 判断延时启动
 				if (now - propFunc('begin') < propFunc('delay')) {
 					continue;
 				} else {
@@ -228,7 +233,7 @@
 				}
 				var _loop = propFunc('loop_in') + 1;
 				animeObj.setProp('loop_in', _loop);
-				if (propFunc('loop') !== 0 && _loop >= propFunc('loop')) {//判断是否循环
+				if (propFunc('loop') !== 0 && _loop >= propFunc('loop')) {// 判断是否循环
 					var ai = propFunc('after').length;
 					if (ai) {
 						for (; ai--; ) {
@@ -259,9 +264,9 @@
 				}
 			}
 		}
-	}, timer = 0, //记录interval或requestAnimationFrame
-	toString = Object.prototype.toString, //缓存toString方法
-	aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame, //获取requestAnimationFrame
+	}, timer = 0, // 记录interval或requestAnimationFrame
+	toString = Object.prototype.toString, // 缓存toString方法
+	aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame, // 获取requestAnimationFrame
 	Anime = {
 		cancel : false,
 		set : function(fn) {//启动定时器
@@ -278,7 +283,7 @@
 				timer = setInterval(fn, 17);
 			}
 		},
-		clear : function(id) {//终止定时器
+		clear : function(id) {// 终止定时器
 			if (aFrame) {
 				Anime.cancel = true;
 			} else {
@@ -286,13 +291,13 @@
 			}
 			id = 0;
 		},
-		getTime : function() {//获取时间戳
+		getTime : function() {// 获取时间戳
 			return (w.performance && w.performance.now) ? w.performance.now() : +new Date();
 		},
-		easeFormate : function(str) {//格式化缓动函数
+		easeFormate : function(str) {// 格式化缓动函数
 			if (!str)
 				return ease.linear;
-			if ( typeof str === 'function' && str(0) === 0 && str(1) === 1) {//验证自定义缓动方法是否符合规范
+			if ( typeof str === 'function' && str(0) === 0 && str(1) === 1) {// 验证自定义缓动方法是否符合规范
 				return str;
 			}
 			if ( typeof str !== 'string')
@@ -301,7 +306,7 @@
 			if (ease.hasOwnProperty(str)) {
 				return ease[str];
 			}
-			if (ease.hasOwnProperty(str + 'out')) {//默认为out类型缓动
+			if (ease.hasOwnProperty(str + 'out')) {// 默认为out类型缓动
 				return ease[str + 'out'];
 			}
 			var _type = '';
@@ -318,23 +323,23 @@
 			}
 			return ease.linear;
 		},
-		makeObj : function(obj) {//将原始参数转换为动画参数
+		makeObj : function(obj) {// 将原始参数转换为动画参数
 			var _now = Anime.getTime();
 			var _obj = {
 				begin : _now, //记录开始时间
-				delay : parseInt(obj.delay) || 0, //延时启动
-				duration : parseInt(obj.duration) || 1000, //持续时间
+				delay : parseInt(obj.delay) || 0, // 延时启动
+				duration : parseInt(obj.duration) || 1000, // 持续时间
 				loop : (obj.loop !== undefined && obj.loop == parseInt(obj.loop)) ? parseInt(obj.loop) : 1, //循环次数
-				loop_in : 0, //记录循环第几次
-				beforeloop : [], //开始单次循环时执行
-				afterloop : [], //结束单次循环时执行
-				progress : [], //动画过程
-				running : false, //记录是否已启动
-				before : [], //延时结束开始动画时执行
-				after : [], //结束动画时执行
-				easing : Anime.easeFormate(obj.easing), //缓动函数,
-				pause : Boolean(obj.pause), //是否处于暂停
-				pause_time : 0//暂停的时间点
+				loop_in : 0, // 记录循环第几次
+				beforeloop : [], // 开始单次循环时执行
+				afterloop : [], // 结束单次循环时执行
+				progress : [], // 动画过程
+				running : false, // 记录是否已启动
+				before : [], // 延时结束开始动画时执行
+				after : [], // 结束动画时执行
+				easing : Anime.easeFormate(obj.easing), // 缓动函数
+				pause : Boolean(obj.pause), // 是否处于暂停
+				pause_time : 0// 暂停的时间点
 			};
 			if (_obj.pause) {
 				_obj.pause_time = _now;
@@ -342,7 +347,7 @@
 				_obj.running = true;
 			}
 
-			var checkEv = function(ev) {//处理事件绑定
+			var checkEv = function(ev) {// 处理事件绑定
 				if (obj[ev]) {
 					if ( typeof obj[ev] === 'function') {
 						_obj[ev].push(obj[ev]);
@@ -364,14 +369,14 @@
 			return _obj;
 		}
 	}, proto = {
-		pause : function() {//暂停
+		pause : function() {// 暂停
 			this.setProp({
 				'pause' : true,
 				'pause_time' : Anime.getTime()
 			});
 			return this;
 		},
-		resume : function() {//恢复
+		resume : function() {// 恢复
 			var _self = this;
 			this.setProp({
 				'pause' : false,
@@ -380,7 +385,7 @@
 			});
 			return this;
 		},
-		destroy : function() {//终止
+		destroy : function() {// 终止
 			for (var i = anime_list.length; i--; ) {
 				if (anime_list[i] === this) {
 					anime_list[i].bedestroy = 1;
@@ -389,7 +394,7 @@
 			}
 			return this;
 		},
-		getEasing : function(per) {//获取其它缓动
+		getEasing : function(per) {// 获取其它缓动
 			var args = [], i, il;
 			if (toString.call(arguments[1]) === '[object Array]') {
 				for ( i = 0, il = arguments[1].length; i < il; i++) {
@@ -417,10 +422,10 @@
 		}
 
 		var _obj = Anime.makeObj(obj), _self = this;
-		this.getProp = function(key) {//获取属性
+		this.getProp = function(key) {// 获取属性
 			return _obj[key];
 		};
-		this.setProp = function(key, val) {//设置属性，支持key+val也支持对象的形式
+		this.setProp = function(key, val) {// 设置属性，支持key+val也支持对象的形式
 			if (toString.call(key) === '[object Object]') {
 				for (var i in key) {
 					_self.setProp(i, key[i]);
@@ -437,7 +442,7 @@
 			}
 			return _self;
 		};
-		this.getObj = function() {//获取原始动画对象，深度拷贝
+		this.getObj = function() {// 获取原始动画对象，深度拷贝
 			var _o = {};
 			for (var i in obj) {
 				if (obj.hasOwnProperty(i)) {
@@ -454,7 +459,7 @@
 			}
 			return _o;
 		};
-		this.bind = function(event, fn) {//绑定事件处理方法
+		this.bind = function(event, fn) {// 绑定事件处理方法
 			if (toString.call(event) === '[object Object]') {
 				for (var i in event) {
 					_self.bind(i, event[i]);
@@ -472,7 +477,7 @@
 			}
 			return _self;
 		};
-		this.unbind = function(event, fn) {//解除绑定
+		this.unbind = function(event, fn) {// 解除绑定
 			if (toString.call(event) === '[object Object]') {
 				for (var i in event) {
 					_self.unbind(i, event[i]);
@@ -492,9 +497,9 @@
 			}
 			return _self;
 		};
-		this.restart = function() {//重启动画
+		this.restart = function() {// 重启动画
 			var __obj = Anime.makeObj(obj);
-			//继承所有已绑定的事件
+			// 继承所有已绑定的事件
 			__obj.progress = _obj.progress;
 			__obj.before = _obj.before;
 			__obj.beforeloop = _obj.beforeloop;
@@ -516,7 +521,7 @@
 	for (var i in proto) {
 		simpleAnime.prototype[i] = proto[i];
 	}
-	w.simpleAnime = simpleAnime;
+	w.SimpleAnime = simpleAnime;
 
 	if ( typeof w.define === 'function' && define.amd) {
 		define('simpleanime', [], function() {
@@ -525,21 +530,21 @@
 	}
 })(window);
 /*
- * simpleAnime示例：
- * var animeObj=simpleAnime({
+ * 示例：
+ * var animeObj=SimpleAnime({
  * 	delay:1000,//延时启动[毫秒]
  * 	duration:5000,//持续时间[毫秒]
  * 	loop:3,//循环次数
  * 	beforeloop:function(event){},//开始单次循环时执行[函数]event.loop,event.target
  * 	afterloop:function(event){},//结束单次循环时执行[函数]event.loop,event.target
- * 	progress:obj.function(event){//动画过程[函数，必须]，event.easing，event.progress，event.total，event.percent，event.target
+ * 	progress:obj.function(event){//动画过程[函数]，event.ease，event.progress，event.total，event.percent，event.target
  * 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
- * 		var new_ease=this.getEasing(event.easing,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组
+ * 		var new_ease=this.getEasing(event.ease,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组
  * 	},
  * 	before:function(event){},//延时结束开始动画时执行[函数]event.target
  * 	after:function(event){},//结束动画时执行[函数]event.target
  * 	easing:'easeOutElastic',//缓动函数
- * 	pause:false，//是否初始暂停
+ * 	pause:false,//是否初始暂停
  * 	insertBefore:true//先执行
  * });
  *
