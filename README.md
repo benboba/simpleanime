@@ -55,6 +55,12 @@ animeObj.pause()//中途暂停
 其它方法：
 ```javascript
 animeObj.getProp('begin')//获取属性
-	.getEasing(number,easingFunction1,easingFunction2)//获取其它缓动方法的运算结果
-	.getObj()//获取原始参数
+animeObj.getEasing(number,easingFunction1,easingFunction2)//获取其它缓动方法的运算结果
+animeObj.getObj()//获取原始参数
+```
+
+其它：
+```javascript
+SimpleAnime.listen(function)//注册定时器执行的方法
+	.unlisten(function)//移除定时器执行的方法
 ```
