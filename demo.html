@@ -118,6 +118,14 @@
 						button.removeAttribute('disabled');
 					}, 3500);
 				});
+				
+				var listen = 0;
+				SimpleAnime.listen(function(){
+					console.log(listen++);
+					if(listen == 1000) {
+						SimpleAnime.unlisten(arguments.callee);
+					}
+				});
 			})();
 		</script>
 	</body>
