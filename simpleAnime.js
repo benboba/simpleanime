@@ -173,6 +173,10 @@
 		for (var ti = timer_listen.length; ti--; ) {
 			if (timer_listen[ti].destroy) {
 				timer_listen.splice(ti, 1);
+				if (!anime_list.length && !timer_listen.length) {
+					Anime.clear(timer);
+					timer = 0;
+				}
 			} else {
 				timer_listen[ti].fn();
 			}
@@ -542,20 +546,18 @@
 		if (!timer) {
 			Anime.set(interval);
 		}
+		return simpleAnime;
 	};
 	simpleAnime.unlisten = function(fn) {
 		if ( typeof fn === 'function') {
 			for (var ti = timer_listen.length; ti--; ) {
 				if (timer_listen[ti].fn === fn) {
 					timer_listen[ti].destroy = 1;
-					if (!anime_list.length && !timer_listen.length) {
-						Anime.clear(timer);
-						timer = 0;
-					}
 					break;
 				}
 			}
 		}
+		return simpleAnime;
 	};
 	w.SimpleAnime = simpleAnime;
 
