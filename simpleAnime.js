@@ -1,13 +1,14 @@
 /*
- * simpleanime.js 
+ * simpleanime.js
  * @author WangFeng
- * 
+ *
  * Copyright 2014, (https://github.com/benboba/simpleanime)
  * Licensed under the MIT license
  */
 
 (function(w) {
 	var anime_list = [], // 动画对象列表
+	timer_listen = [], // 定时器执行方法列表
 	ease = {// 缓动函数
 		linear : function(f) {
 			return f;
@@ -169,11 +170,18 @@
 		}
 	}, interval = function() {// 间隔执行函数
 		var now = Anime.getTime();
+		for (var ti = timer_listen.length; ti--; ) {
+			if (timer_listen[ti].destroy) {
+				timer_listen.splice(ti, 1);
+			} else {
+				timer_listen[ti].fn();
+			}
+		}
 		for (var i = anime_list.length; i--; ) {
 			var animeObj = anime_list[i];
 			if (animeObj.bedestroy) {
 				anime_list.splice(i, 1);
-				if (!anime_list.length) {
+				if (!anime_list.length && !timer_listen.length) {
 					Anime.clear(timer);
 					timer = 0;
 				}
@@ -183,36 +191,40 @@
 			if (propFunc('pause')) {
 				continue;
 			}
+			
+			var obj_begin = propFunc('begin'), obj_delay = propFunc('delay'), obj_duration = propFunc('duration'), obj_loop = propFunc('loop'), obj_loop_in = propFunc('loop_in');
+			var obj_before = propFunc('before'), obj_after = propFunc('after'), obj_progress = propFunc('progress'), obj_beforeloop = propFunc('beforeloop'), obj_afterloop = propFunc('afterloop');
+			
 			if (!propFunc('running')) {// 判断延时启动
-				if (now - propFunc('begin') < propFunc('delay')) {
+				if (now - obj_begin < obj_delay) {
 					continue;
 				} else {
 					animeObj.setProp('running', true);
-					var bi = propFunc('before').length, bli = propFunc('beforeloop').length;
+					var bi = obj_before.length, bli = obj_beforeloop.length;
 					if (bi) {
 						for (; bi--; ) {
-							propFunc('before')[bi].call(animeObj, {
+							obj_before[bi].call(animeObj, {
 								target : animeObj
 							});
 						}
 					}
 					if (bli) {
 						for (; bli--; ) {
-							propFunc('beforeloop')[bli].call(animeObj, {
-								loop : propFunc('loop_in'),
+							obj_beforeloop[bli].call(animeObj, {
+								loop : obj_loop_in,
 								target : animeObj
 							});
 						}
 					}
 				}
 			}
-			var past = Math.min(now - propFunc('begin') - propFunc('delay'), propFunc('duration')), easeFunc = propFunc('easing');
-			var _duration = propFunc('duration'), _per = past / _duration;
+			var past = Math.min(now - obj_begin - obj_delay, obj_duration), easeFunc = propFunc('easing');
+			var _duration = obj_duration, _per = past / _duration;
 			var _ease = easeFunc(_per);
-			var fi = propFunc('progress').length;
+			var fi = obj_progress.length;
 			if (fi) {
 				for (; fi--; ) {
-					propFunc('progress')[fi].call(animeObj, {
+					obj_progress[fi].call(animeObj, {
 						ease : _ease,
 						total : _duration,
 						progress : past,
@@ -221,42 +233,42 @@
 					});
 				}
 			}
-			if (past == propFunc('duration')) {
-				var ali = propFunc('afterloop').length;
+			if (past == obj_duration) {
+				var ali = obj_afterloop.length;
 				if (ali) {
 					for (; ali--; ) {
-						propFunc('afterloop')[ali].call(animeObj, {
-							loop : propFunc('loop_in'),
+						obj_afterloop[ali].call(animeObj, {
+							loop : obj_loop_in,
 							target : animeObj
 						});
 					}
 				}
-				var _loop = propFunc('loop_in') + 1;
+				var _loop = obj_loop_in + 1;
 				animeObj.setProp('loop_in', _loop);
-				if (propFunc('loop') !== 0 && _loop >= propFunc('loop')) {// 判断是否循环
-					var ai = propFunc('after').length;
+				if (obj_loop !== 0 && _loop >= obj_loop) {// 判断是否循环
+					var ai = obj_after.length;
 					if (ai) {
 						for (; ai--; ) {
-							propFunc('after')[ai].call(animeObj, {
+							obj_after[ai].call(animeObj, {
 								target : animeObj
 							});
 						}
 					}
 					anime_list.splice(i, 1);
-					if (!anime_list.length) {
+					if (!anime_list.length && !timer_listen.length) {
 						Anime.clear(timer);
 						timer = 0;
 					}
 				} else {
 					animeObj.setProp({
-						'begin' : now,
+						'begin' : obj_begin + obj_duration,
 						'delay' : 0
 					});
-					var bli = propFunc('beforeloop').length;
+					var bli = obj_beforeloop.length;
 					if (bli) {
 						for (; bli--; ) {
-							propFunc('beforeloop')[bli].call(animeObj, {
-								loop : propFunc('loop_in'),
+							obj_beforeloop[bli].call(animeObj, {
+								loop : obj_loop_in,
 								target : animeObj
 							});
 						}
@@ -521,6 +533,30 @@
 	for (var i in proto) {
 		simpleAnime.prototype[i] = proto[i];
 	}
+	simpleAnime.listen = function(fn) {
+		if ( typeof fn === 'function') {
+			timer_listen.push({
+				fn : fn
+			});
+		}
+		if (!timer) {
+			Anime.set(interval);
+		}
+	};
+	simpleAnime.unlisten = function(fn) {
+		if ( typeof fn === 'function') {
+			for (var ti = timer_listen.length; ti--; ) {
+				if (timer_listen[ti].fn === fn) {
+					timer_listen[ti].destroy = 1;
+					if (!anime_list.length && !timer_listen.length) {
+						Anime.clear(timer);
+						timer = 0;
+					}
+					break;
+				}
+			}
+		}
+	};
 	w.SimpleAnime = simpleAnime;
 
 	if ( typeof w.define === 'function' && define.amd) {
