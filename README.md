@@ -10,7 +10,7 @@ simpleanime（简单动画实现）
 API
 -
 
-SimpleAnime基本方法
+<b>SimpleAnime基本方法</b>
 ___
 @param [Object] 基本配置参数
 
@@ -69,7 +69,7 @@ var animeObj=SimpleAnime({
 });
 ```
 
-SimpleAnime实例对象的方法
+<b>SimpleAnime实例对象的方法</b>
 ____
 
 <b>pause方法</b>
@@ -229,6 +229,9 @@ var animeObj = SimpleAnime({
 var originalObject = anime.getObj();
 
 ```
+
+<b>其它方法</b>
+____
 
 <b>SimpleAnime.listen</b>
 
