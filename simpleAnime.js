@@ -3,7 +3,7 @@
  * @author WangFeng
  *
  * Copyright 2014, (https://github.com/benboba/simpleanime)
- * Licensed under the MIT license
+ * Released under the MIT license
  */
 
 (function(w) {
@@ -283,10 +283,13 @@
 	}, timer = 0, // 记录interval或requestAnimationFrame
 	toString = Object.prototype.toString, // 缓存toString方法
 	aFrame = w.requestAnimationFrame || w.mozRequestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame, // 获取requestAnimationFrame
+	use_aframe = !!aFrame, // 是否使用requestAnimationFrame
+	DEFAULT_ITV = Math.round(1000/60), // 默认时间间隔
+	use_itv = DEFAULT_ITV, // 实际使用的时间间隔
 	Anime = {
 		cancel : false,
 		set : function(fn) {//启动定时器
-			if (aFrame) {
+			if (use_aframe) {
 				timer = aFrame(function() {
 					fn();
 					if (Anime.cancel) {
@@ -296,16 +299,16 @@
 					}
 				});
 			} else {
-				timer = setInterval(fn, 17);
+				timer = setInterval(fn, use_itv);
 			}
 		},
-		clear : function(id) {// 终止定时器
-			if (aFrame) {
+		clear : function() {// 终止定时器
+			if (use_aframe) {
 				Anime.cancel = true;
 			} else {
-				clearInterval(id);
+				clearInterval(timer);
 			}
-			id = 0;
+			timer = 0;
 		},
 		getTime : function() {// 获取时间戳
 			return (w.performance && w.performance.now) ? w.performance.now() : +new Date();
@@ -537,7 +540,7 @@
 	for (var i in proto) {
 		simpleAnime.prototype[i] = proto[i];
 	}
-	simpleAnime.listen = function(fn) {
+	simpleAnime.listen = function(fn) { // 添加新的逐帧执行方法
 		if ( typeof fn === 'function') {
 			timer_listen.push({
 				fn : fn
@@ -548,12 +551,40 @@
 		}
 		return simpleAnime;
 	};
-	simpleAnime.unlisten = function(fn) {
+	simpleAnime.unlisten = function(fn) { // 移除指定的逐帧执行方法
 		if ( typeof fn === 'function') {
 			for (var ti = timer_listen.length; ti--; ) {
 				if (timer_listen[ti].fn === fn) {
 					timer_listen[ti].destroy = 1;
 					break;
+				}
+			}
+		}
+		return simpleAnime;
+	};
+	/*
+	 * 手动设置fps（每秒执行的帧数）
+	 * @param [Number] 新的fps值（每秒执行的帧数）
+	 * @return [Function] SimpleAnime
+	 */
+	simpleAnime.setFPS = function(fps) {
+		if ( typeof fps === 'number') {
+			var _itv = Math.round(1000 / fps);
+			if (_itv !== use_itv) {
+				use_itv = _itv;
+				var _old_use_aframe = use_aframe, _new_use_aframe;
+				if (use_itv > DEFAULT_ITV) {
+					_new_use_aframe = false; // 当新的FPS小于60时，中止使用requestAnimationFrame
+				} else {
+					use_itv = DEFAULT_ITV; // 最大FPS限制为60
+					_new_use_aframe = !!aFrame;
+				}
+				if (timer && (!use_aframe || !_old_use_aframe)) { // 如果动画已经在执行，则重启动画
+					Anime.clear(timer);
+					use_aframe = _new_use_aframe;
+					Anime.set(interval);
+				} else {
+					use_aframe = _new_use_aframe;
 				}
 			}
 		}
