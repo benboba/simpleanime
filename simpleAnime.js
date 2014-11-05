@@ -225,6 +225,9 @@
 			var past = Math.min(now - obj_begin - obj_delay, obj_duration), easeFunc = propFunc('easing');
 			var _duration = obj_duration, _per = past / _duration;
 			var _ease = easeFunc(_per);
+			if (isNaN(_ease)) {
+				_ease = 0;
+			}
 			var fi = obj_progress.length;
 			if (fi) {
 				for (; fi--; ) {
