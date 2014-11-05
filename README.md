@@ -72,45 +72,196 @@ var animeObj=SimpleAnime({
 SimpleAnime实例对象的方法
 ____
 
-pause方法
+<b>pause方法</b>
 
-暂停
+暂停当前实例
+
+@return [SimpleAnime] 当前实例
 
 ```javascript
-animeObj.pause()//中途暂停
-	.resume()//取消暂停
-	.destroy()//移除（不可恢复）
-	.restart()//重新启动动画（不可恢复）
-	.bind({//绑定事件，可为一个事件绑定多个回调函数，所有回调函数的作用域为simpleAnime实例本身
-		before:function(){},
-		beforeloop:function(){},
-		progress:function(){},
-		afterloop:function(){},
-		after:function(){}
-	})
-	.bind('progress',function(){})//也支持“事件名+回调函数”的方式
-	.unbind({//解除绑定，参数同bind
-		before:function(){}
-	})
-	.unbind('before',function(){})//解除绑定同理
-	.unbind('before')//只传事件名会解除该事件下所有回调函数的绑定
-	.unbind({//只传事件名会解除该事件下所有回调函数的绑定
-		'before':null,
-		'after':null
-	})
-	.setProp('loop_in',0)//设置属性
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.pause();
 ```
 
-其它方法：
+<b>resume方法</b>
+
+恢复被暂停的实例
+
+@return [SimpleAnime] 当前实例
+
 ```javascript
-animeObj.getProp('begin')//获取属性
-animeObj.getEasing(number,easingFunction1,easingFunction2)//获取其它缓动方法的运算结果
-animeObj.getObj()//获取原始参数
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.resume();
 ```
 
-其它：
+<b>destroy方法</b>
+
+销毁当前实例（不可恢复）
+
+@return [SimpleAnime] 当前实例
+
 ```javascript
-SimpleAnime.listen(function)//注册定时器执行的方法
-	.unlisten(function)//移除定时器执行的方法
-	.setFPS(fps);
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.destroy();
+```
+
+<b>restart方法</b>
+
+重新启动当前动画（不可恢复）
+
+@return [SimpleAnime] 当前实例
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.restart();
+```
+
+<b>bind方法</b>
+
+为当前动画实例绑定新的事件（progress、before、after、beforeloop、afterloop）
+
+@param [(String, Function|Array) | Object]
+@return [SimpleAnime] 当前实例
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.bind('before', function).bind('progress', [function1, function2]);
+animeObj.bind({
+	'before' : function(event){...},
+	'progress' : function(event){...},
+	'after' : function(event){...}
+});
+```
+
+<b>unbind方法</b>
+
+解除指定的事件监听（progress、before、after、beforeloop、afterloop）
+
+@param [(String, Function|Null) | Object] 传入null表示解除指定事件的全部监听
+@return [SimpleAnime] 当前实例
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.unbind('before', function).unbind('after');
+animeObj.unbind({
+	'before' : function,
+	'after' : null
+});
+```
+
+<b>setProp方法</b>
+
+修改当前实例的特定属性
+
+@param [(Key, Val) | Object]
+@return [SimpleAnime] 当前实例
+
+<b>Key Val详解</b>
+key = begin(动画开始时间)|pause_time(暂停时间，需与pause同时设置)|delay(延迟启动时间)|duration(动画结束时间), val限制为Date时间戳
+key = loop_in(循环第几次), val限制为自然数，且不能大于总循环数
+key = pause(是否暂停，需与pause_time同时设置)|running(是否运行中), val限制为布尔值
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+animeObj.setProp('loop_in', 0);
+animeObj.setProp({
+	'loop_in' : 0,
+	'begin' : +new Date()
+});
+```
+
+<b>getProp方法</b>
+
+获取当前实例的特定属性
+
+@param [String]
+@return [Val] 根据不同的属性返回不同的值
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+var duration = animeObj.getProp('duration');
+```
+
+<b>getEasing方法</b>
+
+获取其它缓动结果
+
+@param [percent, String|Function, ...] 传入当前进度和缓动名称或自定义缓动方法（可多个）
+@return [Array] 依据传入参数的顺序生成相应的数组
+
+```javascript
+var animeObj = SimpleAnime({
+	progress : function(event) {
+		var new_ease = this.getEasing(event.percent, 'elastic', easingFunction1, easingFunction2);
+		console.log(new_ease); // [elasticout(percent), easingFunction1(percent), easingFunction2(percent)]
+	}
+	...
+});
+
+```
+
+<b>getObj方法</b>
+
+获取原始参数
+
+@return [Array] 依据传入参数的顺序生成相应的数组
+
+```javascript
+var animeObj = SimpleAnime({
+	...
+});
+var originalObject = anime.getObj();
+
+```
+
+<b>SimpleAnime.listen</b>
+
+注册逐帧执行的方法（相当于监听onEnterFrame）
+
+@param [Function]
+
+@return [Class] 返回SimpleAnime构造函数
+
+```javascript
+SimpleAnime.listen(function);
+```
+
+<b>SimpleAnime.unlisten</b>
+
+移除逐帧执行的方法
+
+@param [Function]
+
+@return [Class] 返回SimpleAnime构造函数
+
+```javascript
+SimpleAnime.unlisten(function);
+```
+
+<b>SimpleAnime.setFPS</b>
+
+设置全局FPS（每秒执行的帧数） 默认FPS为60，最大60
+
+@param [FPS]
+
+@return [Class] 返回SimpleAnime构造函数
+
+```javascript
+SimpleAnime.setFPS(20);
 ```
