@@ -1,7 +1,7 @@
 simpleanime（简单动画实现）
 =
 
-简单说明
+说明
 -
 
 引用simpleanime.js即可使用，不依赖任何类库，所有动画在同一条时间轴渲染，最大化节约性能。
@@ -129,6 +129,7 @@ animeObj.restart();
 为当前动画实例绑定新的事件（progress、before、after、beforeloop、afterloop）
 
 @param [(String, Function|Array) | Object]
+
 @return [SimpleAnime] 当前实例
 
 ```javascript
@@ -148,6 +149,7 @@ animeObj.bind({
 解除指定的事件监听（progress、before、after、beforeloop、afterloop）
 
 @param [(String, Function|Null) | Object] 传入null表示解除指定事件的全部监听
+
 @return [SimpleAnime] 当前实例
 
 ```javascript
@@ -166,6 +168,7 @@ animeObj.unbind({
 修改当前实例的特定属性
 
 @param [(Key, Val) | Object]
+
 @return [SimpleAnime] 当前实例
 
 <b>Key Val详解</b>
@@ -189,6 +192,7 @@ animeObj.setProp({
 获取当前实例的特定属性
 
 @param [String]
+
 @return [Val] 根据不同的属性返回不同的值
 
 ```javascript
@@ -202,14 +206,15 @@ var duration = animeObj.getProp('duration');
 
 获取其它缓动结果
 
-@param [percent, String|Function, ...] 传入当前进度和缓动名称或自定义缓动方法（可多个）
+@param [percent, String|Function, ...] 传入当前进度和缓动名称或自定义缓动方法
+
 @return [Array] 依据传入参数的顺序生成相应的数组
 
 ```javascript
 var animeObj = SimpleAnime({
 	progress : function(event) {
-		var new_ease = this.getEasing(event.percent, 'elastic', easingFunction1, easingFunction2);
-		console.log(new_ease); // [elasticout(percent), easingFunction1(percent), easingFunction2(percent)]
+		var new_ease = this.getEasing(event.percent, 'elastic', easingFunction1, easingFunction2, 'circinout');
+		console.log(new_ease); // [elasticout(percent), easingFunction1(percent), easingFunction2(percent), circinout(percent)]
 	}
 	...
 });
@@ -267,4 +272,37 @@ SimpleAnime.unlisten(function);
 
 ```javascript
 SimpleAnime.setFPS(20);
+```
+
+一些简单用例
+-
+
+<b>设置执行5秒的动画</b>
+
+```javascript
+var animeObj = SimpleAnime(
+	duration : 5000,
+	progress : function(event) {...},
+	after : function(event) {...}
+);
+```
+
+<b>设置每帧100毫秒，共10帧的动画</b>
+
+```javascript
+var animeObj = SimpleAnime(
+	duration : 100,
+	loop : 10,
+	beforeloop : function(event) {...},
+	afterloop : function(event) {...},
+	after : function(event) {...}
+);
+```
+
+<b>判断如果是Android浏览器，则设置FPS为20</b>
+
+```javascript
+if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
+	SimpleAnime.setFPS(20);
+}
 ```
