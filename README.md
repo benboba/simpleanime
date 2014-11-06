@@ -353,7 +353,7 @@ var animeObj = SimpleAnime({
 	duration : 2000,
 	delay : 1000,
 	progress : function(event) {
-		div.style.top = 100 + 100 * event.easing + 'px';
+		div.style.top = 100 + 100 * event.ease + 'px';
 	},
 	easing : 'bounce'
 });
