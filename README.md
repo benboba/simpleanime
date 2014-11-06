@@ -318,23 +318,23 @@ SimpleAnime.setFPS(20);
 <b>设置执行5秒的动画</b>
 
 ```javascript
-var animeObj = SimpleAnime(
+var animeObj = SimpleAnime({
 	duration : 5000,
 	progress : function(event) {...},
 	after : function(event) {...}
-);
+});
 ```
 
 <b>设置每帧100毫秒，共10帧的动画</b>
 
 ```javascript
-var animeObj = SimpleAnime(
+var animeObj = SimpleAnime({
 	duration : 100,
 	loop : 10,
 	beforeloop : function(event) {...},
 	afterloop : function(event) {...},
 	after : function(event) {...}
-);
+});
 ```
 
 <b>判断如果是Android浏览器，则设置FPS为20</b>
@@ -349,12 +349,12 @@ if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
 
 ```javascript
 var div = document.getElementById('div');
-var animeObj = SimpleAnime(
+var animeObj = SimpleAnime({
 	duration : 2000,
 	delay : 1000,
 	progress : function(event) {
 		div.style.top = 100 + 100 * event.easing + 'px';
 	},
 	easing : 'bounce'
-);
+});
 ```
