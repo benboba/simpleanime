@@ -415,26 +415,6 @@
 				}
 			}
 			return this;
-		},
-		getEasing : function(per) {// 获取其它缓动
-			var args = [], i, il;
-			if (toString.call(arguments[1]) === '[object Array]') {
-				for ( i = 0, il = arguments[1].length; i < il; i++) {
-					args.push(Anime.easeFormate(arguments[1][i]));
-				}
-			} else {
-				for ( i = 1, il = arguments.length; i < il; i++) {
-					args.push(Anime.easeFormate(arguments[i]));
-				}
-			}
-			if (!args.length) {
-				return [per];
-			}
-			var result = [];
-			for (var s = 0, l = args.length; s < l; s++) {
-				result[s] = args[s](per);
-			}
-			return result;
 		}
 	};
 
@@ -452,15 +432,19 @@
 				for (var i in key) {
 					_self.setProp(i, key[i]);
 				}
-			} else if ((key === 'begin' || key === 'pause_time' || key === 'delay' || key === 'duration') && val === parseFloat(val)) {
+			} else if ((key === 'begin' || key === 'pause_time') && val === parseFloat(val)) {
 				var _now = Anime.getTime();
 				if (val >= _obj.begin && val <= _now) {
 					_obj[key] = val;
 				}
+			} else if ((key === 'delay' || key === 'duration' || key === 'loop') && val === parseInt(val)) {
+				obj[key] = val;
 			} else if (key === 'loop_in' && val === parseInt(val) && val >= 0 && val <= _obj.loop) {
 				_obj[key] = val;
 			} else if (key === 'pause' || key === 'running') {
 				_obj[key] = Boolean(val);
+			} else if (key === 'easing') {
+				_obj[key] = Anime.easeFormate(val);
 			}
 			return _self;
 		};
@@ -543,6 +527,26 @@
 	for (var i in proto) {
 		simpleAnime.prototype[i] = proto[i];
 	}
+	simpleAnime.getEasing = function(per) {// 获取其它缓动
+		var args = [], i, il;
+		if (toString.call(arguments[1]) === '[object Array]') {
+			for ( i = 0, il = arguments[1].length; i < il; i++) {
+				args.push(Anime.easeFormate(arguments[1][i]));
+			}
+		} else {
+			for ( i = 1, il = arguments.length; i < il; i++) {
+				args.push(Anime.easeFormate(arguments[i]));
+			}
+		}
+		if (!args.length) {
+			return [per];
+		}
+		var result = [];
+		for (var s = 0, l = args.length; s < l; s++) {
+			result[s] = args[s](per);
+		}
+		return result;
+	};
 	simpleAnime.listen = function(fn) { // 添加新的逐帧执行方法
 		if ( typeof fn === 'function') {
 			timer_listen.push({
@@ -601,36 +605,3 @@
 		});
 	}
 })(window);
-/*
- * 示例：
- * var animeObj=SimpleAnime({
- * 	delay:1000,//延时启动[毫秒]
- * 	duration:5000,//持续时间[毫秒]
- * 	loop:3,//循环次数
- * 	beforeloop:function(event){},//开始单次循环时执行[函数]event.loop,event.target
- * 	afterloop:function(event){},//结束单次循环时执行[函数]event.loop,event.target
- * 	progress:obj.function(event){//动画过程[函数]，event.ease，event.progress，event.total，event.percent，event.target
- * 		var new_ease=this.getEasing(event.progress/event.total,'easeOutBounce','easeInBack');//获取新的缓动运算结果，可一次获取多个，返回值为数组
- * 		var new_ease=this.getEasing(event.ease,['easeOutBounce','easeInBack']);//获取新的缓动运算结果，可一次获取多个，返回值为数组
- * 	},
- * 	before:function(event){},//延时结束开始动画时执行[函数]event.target
- * 	after:function(event){},//结束动画时执行[函数]event.target
- * 	easing:'easeOutElastic',//缓动函数
- * 	pause:false,//是否初始暂停
- * 	insertBefore:true//先执行
- * });
- *
- * 以下功能支持链式操作
- * animeObj.pause()//中途暂停
- * 	.resume()//取消暂停
- * 	.destroy()//移除（不可恢复）
- * 	.restart()//重新启动动画
- * 	.bind({//绑定事件，可为一个事件绑定多个回调函数，传入数组可绑定多个方法
- * 		before:[function1(){},function2(){}],
- * 		beforeloop:function(){},
- * 		progress:function(){},
- * 		afterloop:function(){},
- * 		after:function(){}
- * 	}).bind('progress',function(){}).unbind({//解除绑定，参数同bind
- * 	});
- */
