@@ -21,6 +21,7 @@ var animeObj=SimpleAnime({
 	delay:1000, // 延时启动 [毫秒] 默认0
 	duration:5000, // 持续时间 [毫秒] 默认1000
 	loop:3, // 循环次数 [int] 0表示无限循环，默认1
+	
 	/*
 	 * 开始单次循环时执行的方法 [函数|数组]
 	 * 参数event详解：
@@ -28,6 +29,7 @@ var animeObj=SimpleAnime({
 	 * event.loop [自然数] 当前是第几次循环
 	 */
 	beforeloop:function(event){},
+	
 	/*
 	 * 结束单次循环时执行的方法 [函数|数组]
 	 * 参数event详解：
@@ -35,6 +37,7 @@ var animeObj=SimpleAnime({
 	 * event.loop [自然数] 当前是第几次循环
 	 */
 	afterloop:function(event){},
+	
 	/*
 	 * 动画过程中执行的方法 [函数|数组]
 	 * 参数event详解：
@@ -45,24 +48,28 @@ var animeObj=SimpleAnime({
 	 * event.total [毫秒] 本次动画的总时间（即初始化时传入的duration的值）
 	 */
 	progress:function(event){},
+	
 	/*
 	 * 动画开始时执行的方法 [函数|数组] 如果有延时，则在延时结束时触发。如果默认暂停，则在第一次恢复时触发
 	 * 参数event详解：
 	 * event.target [SimpleAnime] 指向当前simpleAnime实例
 	 */
 	before:function(event){},
+	
 	/*
 	 * 动画结束时执行的方法 [函数|数组]
 	 * 参数event详解：
 	 * event.target [SimpleAnime] 指向当前simpleAnime实例
 	 */
 	after:function(event){},
+	
 	/*
 	 * 缓动函数 [字符串|函数] 默认linear
 	 * 传入字符串需包含quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce中的任何一个，否则会当做linear处理，如果不传inout|in，则按out处理
 	 * 传入函数表示自定义缓动，自定义缓动遵守规则即可：输入0需返回0，输入1需返回1
 	 */
 	easing:'elasticin',
+	
 	pause:false, // 是否初始暂停 [Boolean] 默认false
 	insertBefore:true // 是否先执行 [Boolean] 默认false表示插入动画序列最后，true表示插入动画序列最前面
 });
