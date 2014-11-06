@@ -59,6 +59,7 @@
 		<script src="simpleAnime.js"></script>
 		<script>
 			(function() {
+				SimpleAnime.setFPS(10);
 				var ball = document.getElementById('ball'), ease = document.getElementById('ease'), button = document.getElementById('button');
 				button.addEventListener('click', function() {
 					button.setAttribute('disabled', 'disabled');
@@ -79,7 +80,7 @@
 						}
 					}).bind({
 						progress : [function(event) {
-							var new_ease = this.getEasing(event.percent, ['ease-Out-Bounce', 'EEEla(990)#$)@*stic']);
+							var new_ease = SimpleAnime.getEasing(event.percent, ['ease-Out-Bounce', 'EEEla(990)#$)@*stic']);
 							ball.style.left = (20 + 500 * new_ease[1]) + 'px';
 							ball.style.top = 100 + 200 * new_ease[0] + 'px';
 						}],
@@ -91,6 +92,9 @@
 					setTimeout(function() {
 						animeObj.resume();
 					}, 500);
+					setTimeout(function() {
+						SimpleAnime.setFPS(60);
+					}, 1000);
 					
 					//同时添加两个动画对象，可不同步执行动画
 					SimpleAnime({
@@ -118,14 +122,14 @@
 						button.removeAttribute('disabled');
 					}, 3500);
 				});
-				
 				var listen = 0;
-				SimpleAnime.listen(function(){
+				var listenFunc = function(){
 					console.log(listen++);
 					if(listen == 1000) {
 						SimpleAnime.unlisten(arguments.callee);
 					}
-				});
+				};
+				SimpleAnime.listen(listenFunc).unlisten(listenFunc);
 			})();
 		</script>
 	</body>
