@@ -16,12 +16,11 @@ ___
 
 @return [SimpleAnime] simpleAnime实例对象
 
-配置参数详解：
 ```javascript
 var animeObj=SimpleAnime({
 	delay:1000, // 延时启动 [毫秒] 默认0
 	duration:5000, // 持续时间 [毫秒] 默认1000
-	loop:3, // 循环次数 [自然数] 0表示无限循环，默认1
+	loop:3, // 循环次数 [int] 0表示无限循环，默认1
 	/*
 	 * 开始单次循环时执行的方法 [函数|数组]
 	 * 参数event详解：
@@ -60,7 +59,7 @@ var animeObj=SimpleAnime({
 	after:function(event){},
 	/*
 	 * 缓动函数 [字符串|函数] 默认linear
-	 * 传入字符串需包含quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce中的任何一个，否则会当做linear处理，如果不传in|out|inout，则按out处理
+	 * 传入字符串需包含quad|cubic|quart|quint|sine|expo|circ|elastic|back|bounce中的任何一个，否则会当做linear处理，如果不传inout|in，则按out处理
 	 * 传入函数表示自定义缓动，自定义缓动遵守规则即可：输入0需返回0，输入1需返回1
 	 */
 	easing:'elasticin',
@@ -172,9 +171,18 @@ animeObj.unbind({
 @return [SimpleAnime] 当前实例
 
 <b>Key Val详解</b>
-key = begin(动画开始时间)|pause_time(暂停时间，需与pause同时设置)|delay(延迟启动时间)|duration(动画结束时间), val限制为Date时间戳
+
+key = begin(动画开始时间)|pause_time(暂停时间，需与pause同时设置), val限制为时间戳，范围必须大于等于旧的begin时间戳，且小于等于当前时间戳
+
+key = delay(延迟启动)|duration(动画时长), val限制为以毫秒为单位的整数
+
+key = loop(循环次数), val限制为整数
+
 key = loop_in(循环第几次), val限制为自然数，且不能大于总循环数
+
 key = pause(是否暂停，需与pause_time同时设置)|running(是否运行中), val限制为布尔值
+
+key = easing(缓动方式), val没有限制，但如果不是符合规则的字符串或缓动函数，会将缓动方式置为linear
 
 ```javascript
 var animeObj = SimpleAnime({
@@ -183,7 +191,7 @@ var animeObj = SimpleAnime({
 animeObj.setProp('loop_in', 0);
 animeObj.setProp({
 	'loop_in' : 0,
-	'begin' : +new Date()
+	'begin' : (window.performance && window.performance.now) ? window.performance.now() : +new Date()
 });
 ```
 
@@ -195,6 +203,36 @@ animeObj.setProp({
 
 @return [Val] 根据不同的属性返回不同的值
 
+<b>Key Val详解</b>
+
+begin [时间戳] 动画开始的时间戳
+
+duration [毫秒] 动画时长
+
+delay [毫秒] 延迟启动
+
+running [Boolean] 动画是否已启动
+
+pause [Boolean] 是否处于暂停
+
+pause_time [时间戳] 暂停的时间戳
+
+loop [int] 循环次数
+
+loop_in [int] 循环第几次
+
+easing [String|Function] 缓动方式
+
+beforeloop [Array] 开始单次循环时触发的函数列表
+
+afterloop [Array] 结束单次循环时触发的函数列表
+
+progress [Array] 动画过程中每帧触发的函数列表
+
+before [Array] 延时结束开始动画时触发的函数列表
+
+after [Array] 动画结束时触发的函数列表
+
 ```javascript
 var animeObj = SimpleAnime({
 	...
@@ -202,30 +240,11 @@ var animeObj = SimpleAnime({
 var duration = animeObj.getProp('duration');
 ```
 
-<b>getEasing方法</b>
-
-获取其它缓动结果
-
-@param [percent, String|Function, ...] 传入当前进度和缓动名称或自定义缓动方法
-
-@return [Array] 依据传入参数的顺序生成相应的数组
-
-```javascript
-var animeObj = SimpleAnime({
-	progress : function(event) {
-		var new_ease = this.getEasing(event.percent, 'elastic', easingFunction1, easingFunction2, 'circinout');
-		console.log(new_ease); // [elasticout(percent), easingFunction1(percent), easingFunction2(percent), circinout(percent)]
-	}
-	...
-});
-
-```
-
 <b>getObj方法</b>
 
 获取原始参数
 
-@return [Array] 依据传入参数的顺序生成相应的数组
+@return [Object] 返回原始参数的深拷贝对象
 
 ```javascript
 var animeObj = SimpleAnime({
@@ -237,6 +256,25 @@ var originalObject = anime.getObj();
 
 <b>其它方法</b>
 ____
+
+<b>SimpleAnime.getEasing</b>
+
+获取其它缓动结果
+
+@param [percent, String|Function, ...] 传入当前进度和缓动名称或自定义缓动方法
+
+@return [Array] 依据传入参数的顺序生成相应的数组
+
+```javascript
+var animeObj = SimpleAnime({
+	progress : function(event) {
+		var new_ease = SimpleAnime.getEasing(event.percent, 'elastic', easingFunction1, easingFunction2, 'circinout');
+		console.log(new_ease); // [elasticout(percent), easingFunction1(percent), easingFunction2(percent), circinout(percent)]
+	}
+	...
+});
+
+```
 
 <b>SimpleAnime.listen</b>
 
