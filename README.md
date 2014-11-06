@@ -344,3 +344,17 @@ if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
 	SimpleAnime.setFPS(20);
 }
 ```
+
+<b>延迟1秒，用2秒时间，将一个div的top值按bounce缓动从100px变到200px</b>
+
+```javascript
+var div = document.getElementById('div');
+var animeObj = SimpleAnime(
+	duration : 2000,
+	delay : 1000,
+	progress : function(event) {
+		div.style.top = 100 + 100 * event.easing + 'px';
+	},
+	easing : 'bounce'
+);
+```
