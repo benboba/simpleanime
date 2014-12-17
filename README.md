@@ -319,6 +319,16 @@ SimpleAnime.unlisten(function);
 SimpleAnime.setFPS(20);
 ```
 
+<b>SimpleAnime.getTime</b>
+
+获取当前时间戳
+
+@return [毫秒] 返回当前时间戳，SimpleAnime会优先获取performance.now，使用此方法可保证获取的时间戳格式与SimpleAnime一致
+
+```javascript
+SimpleAnime.setFPS(20);
+```
+
 一些简单用例
 -
 
