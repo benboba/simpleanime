@@ -198,7 +198,7 @@ var animeObj = SimpleAnime({
 animeObj.setProp('loop_in', 0);
 animeObj.setProp({
 	'loop_in' : 0,
-	'begin' : (window.performance && window.performance.now) ? window.performance.now() : +new Date()
+	'begin' : SimpleAnime.getTime()
 });
 ```
 
