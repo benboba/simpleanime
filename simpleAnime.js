@@ -597,6 +597,11 @@
 		}
 		return simpleAnime;
 	};
+	/*
+	 * getTime方法对外公开
+	 */
+	simpleAnime.getTime = Anime.getTime;
+	
 	w.SimpleAnime = simpleAnime;
 
 	if ( typeof w.define === 'function' && define.amd) {
