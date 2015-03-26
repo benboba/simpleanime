@@ -471,6 +471,11 @@
 					_self.bind(i, event[i]);
 				}
 			} else if ( typeof event === 'string' && /^(?:progress|beforeloop|afterloop|before|after)$/.test(event)) {
+				if ( typeof fn === 'string') {
+					try {
+						fn = (new Function('return ' + fn))();
+					} catch(e) {}
+				}
 				if ( typeof fn === 'function') {
 					_obj[event].push(fn);
 				} else if (toString.call(fn) === '[object Array]') {
@@ -489,9 +494,9 @@
 					_self.unbind(i, event[i]);
 				}
 			} else if ( typeof event === 'string' && /^(?:progress|beforeloop|afterloop|before|after)$/.test(event)) {
-				if ( typeof fn === 'function') {
+				if ( typeof fn === 'function' || typeof fn === 'string') {
 					for (var i1 = _obj[event].length; i1--; ) {
-						if (_obj[event][i1] === fn) {
+						if (_obj[event][i1] === fn || _obj[event][i1].toString().replace(/\s/g,'') === fn.toString().replace(/\s/g,'')) {
 							_obj[event].splice(i1, 1);
 						}
 					}
@@ -548,6 +553,11 @@
 		return result;
 	};
 	simpleAnime.listen = function(fn) { // 添加新的逐帧执行方法
+		if ( typeof fn === 'string') {
+			try {
+				fn = (new Function('return ' + fn))();
+			} catch(e) {}
+		}
 		if ( typeof fn === 'function') {
 			timer_listen.push({
 				fn : fn
@@ -559,9 +569,9 @@
 		return simpleAnime;
 	};
 	simpleAnime.unlisten = function(fn) { // 移除指定的逐帧执行方法
-		if ( typeof fn === 'function') {
+		if ( typeof fn === 'function' || typeof fn === 'string') {
 			for (var ti = timer_listen.length; ti--; ) {
-				if (timer_listen[ti].fn === fn) {
+				if (timer_listen[ti].fn === fn || timer_listen[ti].fn.toString().replace(/\s/g,'') === fn.toString().replace(/\s/g,'')) {
 					timer_listen[ti].destroy = 1;
 					break;
 				}
