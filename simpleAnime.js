@@ -584,25 +584,21 @@
 	 * @param [Number] 新的fps值（每秒执行的帧数）
 	 * @return [Function] SimpleAnime
 	 */
-	simpleAnime.setFPS = function(fps) {
+	simpleAnime.setFPS = function(fps, forceItv) {
 		if ( typeof fps === 'number') {
 			var _itv = Math.round(1000 / fps);
 			if (_itv !== use_itv) {
 				use_itv = _itv;
 				var _old_use_aframe = use_aframe, _new_use_aframe;
-				if (use_itv > DEFAULT_ITV) {
+				if (use_itv > DEFAULT_ITV || forceItv) {
 					_new_use_aframe = false; // 当新的FPS小于60时，中止使用requestAnimationFrame
 				} else {
 					use_itv = DEFAULT_ITV; // 最大FPS限制为60
 					_new_use_aframe = !!aFrame;
 				}
-				if (timer && (!use_aframe || !_old_use_aframe)) { // 如果动画已经在执行，则重启动画
-					Anime.clear(timer);
-					use_aframe = _new_use_aframe;
-					Anime.set(interval);
-				} else {
-					use_aframe = _new_use_aframe;
-				}
+				Anime.clear(timer);
+				use_aframe = _new_use_aframe;
+				Anime.set(interval);
 			}
 		}
 		return simpleAnime;
