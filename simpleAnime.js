@@ -9,6 +9,7 @@
 (function(w) {
 	var anime_list = [], // 动画对象列表
 	timer_listen = [], // 定时器执行方法列表
+	raf_listen = [], // 单次执行方法列表
 	ease = {// 缓动函数
 		linear : function(f) {
 			return f;
@@ -180,6 +181,10 @@
 			} else {
 				timer_listen[ti].fn();
 			}
+		}
+		for (var ri = raf_listen.length; ri--; ) {
+			var ritem = raf_listen.splice(ri, 1)[0];
+			ritem.fn.apply(ritem.tgt);
 		}
 		for (var i = anime_list.length; i--; ) {
 			var animeObj = anime_list[i];
@@ -559,12 +564,27 @@
 			} catch(e) {}
 		}
 		if ( typeof fn === 'function') {
-			timer_listen.push({
+			timer_listen.unshift({
 				fn : fn
 			});
 		}
 		if (!timer) {
 			Anime.set(interval);
+		}
+		return simpleAnime;
+	};
+	simpleAnime.raf = function(fn, tgt) { // 添加单次延时执行方法
+		if ( typeof fn === 'string') {
+			try {
+				fn = (new Function('return ' + fn))();
+			} catch(e) {}
+		}
+		if ( typeof fn === 'function') {
+			tgt = tgt || w;
+			raf_listen.unshift({
+				fn : fn,
+				tgt : tgt
+			});
 		}
 		return simpleAnime;
 	};
