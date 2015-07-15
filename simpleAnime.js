@@ -172,14 +172,15 @@
 	}, interval = function() {// 间隔执行函数
 		var now = Anime.getTime();
 		for (var ti = timer_listen.length; ti--; ) {
-			if (timer_listen[ti].destroy) {
+			var titem = timer_listen[ti];
+			if (titem.destroy) {
 				timer_listen.splice(ti, 1);
 				if (!anime_list.length && !timer_listen.length) {
 					Anime.clear(timer);
 					timer = 0;
 				}
 			} else {
-				timer_listen[ti].fn();
+				titem.fn.apply(titem.tgt);
 			}
 		}
 		for (var ri = raf_listen.length; ri--; ) {
@@ -557,15 +558,17 @@
 		}
 		return result;
 	};
-	simpleAnime.listen = function(fn) { // 添加新的逐帧执行方法
+	simpleAnime.listen = function(fn, tgt) { // 添加新的逐帧执行方法
 		if ( typeof fn === 'string') {
 			try {
 				fn = (new Function('return ' + fn))();
 			} catch(e) {}
 		}
 		if ( typeof fn === 'function') {
+			tgt = tgt || w;
 			timer_listen.unshift({
-				fn : fn
+				fn : fn,
+				tgt : tgt
 			});
 		}
 		if (!timer) {
@@ -588,10 +591,11 @@
 		}
 		return simpleAnime;
 	};
-	simpleAnime.unlisten = function(fn) { // 移除指定的逐帧执行方法
+	simpleAnime.unlisten = function(fn, tgt) { // 移除指定的逐帧执行方法
 		if ( typeof fn === 'function' || typeof fn === 'string') {
+			tgt = tgt || w;
 			for (var ti = timer_listen.length; ti--; ) {
-				if (timer_listen[ti].fn === fn || timer_listen[ti].fn.toString().replace(/\s/g,'') === fn.toString().replace(/\s/g,'')) {
+				if (timer_listen[ti].fn === fn || timer_listen[ti].fn.toString().replace(/\s/g,'') === fn.toString().replace(/\s/g,'') && timer_listen[ti].tgt === tgt) {
 					timer_listen[ti].destroy = 1;
 					break;
 				}
