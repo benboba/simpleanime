@@ -175,10 +175,6 @@
 			var titem = timer_listen[ti];
 			if (titem.destroy) {
 				timer_listen.splice(ti, 1);
-				if (!anime_list.length && !timer_listen.length) {
-					Anime.clear(timer);
-					timer = 0;
-				}
 			} else {
 				titem.fn.apply(titem.tgt);
 			}
@@ -191,10 +187,6 @@
 			var animeObj = anime_list[i];
 			if (animeObj.bedestroy) {
 				anime_list.splice(i, 1);
-				if (!anime_list.length && !timer_listen.length) {
-					Anime.clear(timer);
-					timer = 0;
-				}
 				continue;
 			}
 			var propFunc = animeObj.getProp;
@@ -288,6 +280,11 @@
 					}
 				}
 			}
+		}
+		
+		if (!anime_list.length && !timer_listen.length && !raf_listen.length) {
+			Anime.clear(timer);
+			timer = 0;
 		}
 	}, timer = 0, // 记录interval或requestAnimationFrame
 	toString = Object.prototype.toString, // 缓存toString方法
@@ -588,6 +585,9 @@
 				fn : fn,
 				tgt : tgt
 			});
+		}
+		if (!timer) {
+			Anime.set(interval);
 		}
 		return simpleAnime;
 	};
