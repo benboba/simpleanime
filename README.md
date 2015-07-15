@@ -287,24 +287,40 @@ var animeObj = SimpleAnime({
 
 注册逐帧执行的方法（相当于监听onEnterFrame）
 
-@param [Function]
+@param callback [Function]
+@param target [Object]
 
 @return [Class] 返回SimpleAnime构造函数
 
 ```javascript
-SimpleAnime.listen(function);
+SimpleAnime.listen(function, this);
 ```
 
 <b>SimpleAnime.unlisten</b>
 
 移除逐帧执行的方法
 
-@param [Function]
+@param callback [Function]
+@param target [Object]
 
 @return [Class] 返回SimpleAnime构造函数
 
 ```javascript
-SimpleAnime.unlisten(function);
+SimpleAnime.unlisten(function, this);
+```
+
+<b>SimpleAnime.raf</b>
+
+注册单次延时执行的方法
+
+@param callback [Function]
+@param target [Object]
+
+@return [Class] 返回SimpleAnime构造函数
+
+```javascript
+// 下面这个方法会延时执行this.check
+SimpleAnime.raf(this.check, this);
 ```
 
 <b>SimpleAnime.setFPS</b>
