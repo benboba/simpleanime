@@ -441,7 +441,7 @@
 					_obj[key] = val;
 				}
 			} else if ((key === 'delay' || key === 'duration' || key === 'loop') && val === parseInt(val)) {
-				obj[key] = val;
+				_obj[key] = val;
 			} else if (key === 'loop_in' && val === parseInt(val) && val >= 0 && val <= _obj.loop) {
 				_obj[key] = val;
 			} else if (key === 'pause' || key === 'running') {
