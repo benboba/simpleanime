@@ -75,6 +75,46 @@ var animeObj=SimpleAnime({
 });
 ```
 
+<b>一些用例</b>
+设置执行5秒的动画
+_
+
+```javascript
+var animeObj = SimpleAnime({
+	duration : 5000,
+	progress : function(event) {...},
+	after : function(event) {...}
+});
+```
+
+设置每帧100毫秒，共10帧的动画
+_
+
+```javascript
+var animeObj = SimpleAnime({
+	duration : 100,
+	loop : 10,
+	beforeloop : function(event) {...},
+	afterloop : function(event) {...},
+	after : function(event) {...}
+});
+```
+
+延迟1秒，用2秒时间，将一个div的top值按bounce缓动从100px变到200px
+_
+
+```javascript
+var div = document.getElementById('div');
+var animeObj = SimpleAnime({
+	duration : 2000,
+	delay : 1000,
+	progress : function(event) {
+		div.style.top = 100 + 100 * event.ease + 'px';
+	},
+	easing : 'bounce'
+});
+```
+
 <b>SimpleAnime实例对象的方法</b>
 ____
 
@@ -106,7 +146,7 @@ animeObj.resume();
 
 <b>destroy方法</b>
 
-销毁当前实例（不可恢复）
+销毁当前实例
 
 @return [SimpleAnime] 当前实例
 
@@ -119,7 +159,7 @@ animeObj.destroy();
 
 <b>restart方法</b>
 
-重新启动当前动画（不可恢复）
+重新启动当前动画
 
 @return [SimpleAnime] 当前实例
 
@@ -345,49 +385,10 @@ SimpleAnime.setFPS(20);
 SimpleAnime.setFPS(20);
 ```
 
-一些简单用例
--
-
-<b>设置执行5秒的动画</b>
-
-```javascript
-var animeObj = SimpleAnime({
-	duration : 5000,
-	progress : function(event) {...},
-	after : function(event) {...}
-});
-```
-
-<b>设置每帧100毫秒，共10帧的动画</b>
-
-```javascript
-var animeObj = SimpleAnime({
-	duration : 100,
-	loop : 10,
-	beforeloop : function(event) {...},
-	afterloop : function(event) {...},
-	after : function(event) {...}
-});
-```
-
 <b>判断如果是Android浏览器，则设置FPS为20</b>
 
 ```javascript
 if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
 	SimpleAnime.setFPS(20);
 }
-```
-
-<b>延迟1秒，用2秒时间，将一个div的top值按bounce缓动从100px变到200px</b>
-
-```javascript
-var div = document.getElementById('div');
-var animeObj = SimpleAnime({
-	duration : 2000,
-	delay : 1000,
-	progress : function(event) {
-		div.style.top = 100 + 100 * event.ease + 'px';
-	},
-	easing : 'bounce'
-});
 ```
