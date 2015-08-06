@@ -99,6 +99,21 @@ var animeObj = SimpleAnime({
 });
 ```
 
+设置每隔1秒执行500毫秒的动画
+
+```javascript
+var animeObj = SimpleAnime({
+	delay : 1000,
+	duration : 500,
+	loop : 0,
+	beforeloop : function(event) {...},
+	afterloop : function(event) {...},
+	after : function(event) {
+		this.restart();
+	}
+});
+```
+
 延迟1秒，用2秒时间，将一个div的top值按bounce缓动从100px变到200px
 
 ```javascript
@@ -144,7 +159,7 @@ animeObj.resume();
 
 <b>destroy方法</b>
 
-销毁当前实例
+销毁当前实例（由于是延时销毁，所以在销毁前可以通过调用restart方法来重启）
 
 @return [SimpleAnime] 当前实例
 
@@ -352,7 +367,7 @@ SimpleAnime.unlisten(function, this);
 注册单次延时执行的方法
 
 @param callback [Function]
-@param target [Object]
+@param target [Object] callback方法的作用域
 
 @return [Class] 返回SimpleAnime构造函数
 
@@ -373,6 +388,13 @@ SimpleAnime.raf(this.check, this);
 SimpleAnime.setFPS(20);
 ```
 
+```javascript
+// 判断如果是Android浏览器，则设置FPS为20
+if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
+	SimpleAnime.setFPS(20);
+}
+```
+
 <b>SimpleAnime.getTime</b>
 
 获取当前时间戳
@@ -381,12 +403,4 @@ SimpleAnime.setFPS(20);
 
 ```javascript
 SimpleAnime.setFPS(20);
-```
-
-<b>判断如果是Android浏览器，则设置FPS为20</b>
-
-```javascript
-if (navigator.userAgent.toLowerCase().indexOf('android') !== -1) {
-	SimpleAnime.setFPS(20);
-}
 ```
