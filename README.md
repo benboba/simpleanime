@@ -77,7 +77,7 @@ var animeObj=SimpleAnime({
 
 <b>一些用例</b>
 设置执行5秒的动画
-_
+-
 
 ```javascript
 var animeObj = SimpleAnime({
@@ -88,7 +88,7 @@ var animeObj = SimpleAnime({
 ```
 
 设置每帧100毫秒，共10帧的动画
-_
+-
 
 ```javascript
 var animeObj = SimpleAnime({
@@ -101,7 +101,7 @@ var animeObj = SimpleAnime({
 ```
 
 延迟1秒，用2秒时间，将一个div的top值按bounce缓动从100px变到200px
-_
+-
 
 ```javascript
 var div = document.getElementById('div');
