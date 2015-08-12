@@ -251,7 +251,6 @@
 				var _loop = obj_loop_in + 1;
 				animeObj.setProp('loop_in', _loop);
 				if (obj_loop !== 0 && _loop >= obj_loop) {// 判断是否循环
-					animeObj.bedestroy = 1;
 					var ai = obj_after.length;
 					if (ai) {
 						for (; ai--; ) {
@@ -260,6 +259,7 @@
 							});
 						}
 					}
+					anime_list.splice(i, 1);
 				} else {
 					animeObj.setProp({
 						'begin' : obj_begin + obj_duration,
@@ -279,8 +279,7 @@
 		}
 		
 		if (!anime_list.length && !timer_listen.length && !raf_listen.length) {
-			Anime.clear(timer);
-			timer = 0;
+			Anime.clear();
 		}
 	}, timer = 0, // 记录interval或requestAnimationFrame
 	toString = Object.prototype.toString, // 缓存toString方法
@@ -516,8 +515,6 @@
 			__obj.after = _obj.after;
 			__obj.afterloop = _obj.afterloop;
 			_obj = __obj;
-			_self.bedestroy = 0;
-			delete _self.bedestroy;
 			return _self;
 		};
 
@@ -618,7 +615,7 @@
 					use_itv = DEFAULT_ITV; // 最大FPS限制为60
 					_new_use_aframe = !!aFrame;
 				}
-				Anime.clear(timer);
+				Anime.clear();
 				use_aframe = _new_use_aframe;
 				Anime.set(interval);
 			}
