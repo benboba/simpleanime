@@ -341,6 +341,7 @@ var animeObj = SimpleAnime({
 注册逐帧执行的方法（相当于监听onEnterFrame）
 
 @param callback [Function]
+
 @param target [Object]
 
 @return [Class] 返回SimpleAnime构造函数
@@ -354,6 +355,7 @@ SimpleAnime.listen(function, this);
 移除逐帧执行的方法
 
 @param callback [Function]
+
 @param target [Object]
 
 @return [Class] 返回SimpleAnime构造函数
@@ -367,6 +369,7 @@ SimpleAnime.unlisten(function, this);
 注册单次延时执行的方法
 
 @param callback [Function]
+
 @param target [Object] callback方法的作用域
 
 @return [Class] 返回SimpleAnime构造函数
