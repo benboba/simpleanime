@@ -363,8 +363,6 @@
 			};
 			if (_obj.pause) {
 				_obj.pause_time = _now;
-			} else if (!_obj.delay) {
-				_obj.running = true;
 			}
 
 			var checkEv = function(ev) {// 处理事件绑定
